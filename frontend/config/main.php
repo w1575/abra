@@ -7,11 +7,21 @@ $params = array_merge(
 );
 
 return [
-    'id' => 'app-frontend',
+    'id' => 'abra-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'layout' => '@frontend/themes/bootstrap4material/views/layouts/main',
     'components' => [
+        'view' => [
+            'theme' => [
+                'basePath' => '@frontend/themes/bootstrap4material',
+                'baseUrl' => '@web/themes/bootstrap4material',
+//                'pathMap' => [
+//                    '@app/views' => '@app/themes/basic',
+//                ],
+            ],
+        ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
@@ -36,14 +46,14 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];

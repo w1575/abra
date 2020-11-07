@@ -1,0 +1,26 @@
+header nav.navbar {
+  padding: 0;
+}
+
+.navbar-brand {
+  &:not(:hover) {
+    .header-logo {
+      display: none;
+    }
+  }
+  &:hover {
+    .header-logo--static {
+      display: none;
+    }
+  }
+}
+
+.header-logo {
+  max-width: 50px;
+  &--static {
+    max-width: 44px;
+    margin: 6px 3px 0px;
+
+  }
+}
+
