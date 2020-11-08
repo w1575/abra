@@ -28,10 +28,24 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => [],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['login'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'actions' => ['request-password-reset'],
+                        'allow' => true,
+                        'roles' => ['?', '@'],
+                    ],
+                    [
+                        'actions' => ['signup', 'resend-verification-email'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -84,6 +98,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $this->layout = 'login';
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -152,8 +167,12 @@ class SiteController extends Controller
      */
     public function actionSignup()
     {
+        $this->layout = 'login';
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+        if (
+            $model->load(Yii::$app->request->post())
+            && $model->signup()
+        ) {
             Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
             return $this->goHome();
         }
@@ -170,6 +189,7 @@ class SiteController extends Controller
      */
     public function actionRequestPasswordReset()
     {
+        $this->layout = 'login';
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
@@ -244,6 +264,7 @@ class SiteController extends Controller
      */
     public function actionResendVerificationEmail()
     {
+        $this->layout = 'login';
         $model = new ResendVerificationEmailForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
