@@ -22,7 +22,8 @@ class m201108_132714_create_portal_table extends Migration
             'description' => $this->text()->comment('Описание портала'),
             'status' => $this->integer(1)->comment('Статус портала'),
             'added_by' => $this->integer()->comment('Добавивший пользователь'),
-            'date_added' => $this->dateTime()->comment('Дата добавления')
+            'date_added' => $this->dateTime()->comment('Дата добавления'),
+            'logo_path' => $this->string(512)->comment('Логотип портала'),
         ]);
 
         // creates index for column `added_by`
