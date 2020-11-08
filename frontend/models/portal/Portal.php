@@ -4,6 +4,7 @@ namespace frontend\models\portal;
 
 use frontend\components\behaviors\CommonModelBehavior;
 use Yii;
+use frontend\models\User;
 
 /**
  * This is the model class for table "portal".
