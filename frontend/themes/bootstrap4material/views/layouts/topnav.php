@@ -85,8 +85,21 @@
                         <?=
                         Html::beginForm(['/site/logout'], 'post')
                         . Html::submitButton(
-                            'Logout (' . Yii::$app->user->identity->username . ')',
-                            ['class' => 'nav-link logout']
+                            Html::tag(
+                                    'span',
+                                    'Выйти ' . Yii::$app->user->identity->username . ' ',
+                                [
+                                        'class' => 'd-none d-sm-inline text--white',
+                                ]
+                            ).
+                            Html::tag(
+                                    'i',
+                                    '',
+                                    ['class' => 'fa fa-sign-out text--white']
+                            ),
+                            [
+                                    'class' => 'btn--like-link'
+                            ]
                         )
                         . Html::endForm()
                         ?>
