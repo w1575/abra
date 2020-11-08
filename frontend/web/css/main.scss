@@ -20,7 +20,12 @@ header nav.navbar {
   &--static {
     max-width: 44px;
     margin: 6px 3px 0px;
-
   }
 }
 
+.help-block{
+  font-size: 12px;
+  &-error {
+    color: #c9302c;
+  }
+}

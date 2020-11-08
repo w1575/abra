@@ -17,4 +17,11 @@ header nav.navbar {
   margin: 6px 3px 0px;
 }
 
+.help-block {
+  font-size: 12px;
+}
+.help-block-error {
+  color: #c9302c;
+}
+
 /*# sourceMappingURL=main.css.map */

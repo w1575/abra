@@ -10,6 +10,8 @@ return [
     'id' => 'abra-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'ru-RU',
+    'sourceLanguage' => 'ru-US',
     'controllerNamespace' => 'frontend\controllers',
     'layout' => '@frontend/themes/bootstrap4material/views/layouts/main',
     'components' => [
