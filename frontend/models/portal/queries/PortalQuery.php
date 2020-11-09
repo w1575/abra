@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models\portal;
+namespace frontend\models\portal\queries;
 
 use frontend\components\query\CommomActiveQuery;
 
