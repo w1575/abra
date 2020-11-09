@@ -2,32 +2,22 @@
 
 namespace frontend\controllers\portal;
 
+use frontend\components\controllers\MainController;
 use Yii;
 use frontend\models\portal\Portal;
 use frontend\models\portal\search\Portal as PortalSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * PortalController implements the CRUD actions for Portal model.
  */
-class PortalController extends Controller
+class PortalController extends MainController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+    public $layout = 'portal';
 
     /**
      * Lists all Portal models.
@@ -66,8 +56,11 @@ class PortalController extends Controller
     {
         $model = new Portal();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->save() === true) {
+                $model->logoFile = UploadedFile::getInstance($model, 'logoFile');
+            }
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [

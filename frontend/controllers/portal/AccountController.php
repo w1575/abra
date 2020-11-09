@@ -2,6 +2,7 @@
 
 namespace frontend\controllers\portal;
 
+use frontend\components\controllers\MainController;
 use Yii;
 use frontend\models\portal\Account;
 use frontend\models\portal\search\Account as AccountSearch;
@@ -12,8 +13,9 @@ use yii\filters\VerbFilter;
 /**
  * AccountController implements the CRUD actions for Account model.
  */
-class AccountController extends Controller
+class AccountController extends MainController
 {
+    public $layout = 'portal';
     /**
      * {@inheritdoc}
      */
