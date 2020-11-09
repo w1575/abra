@@ -70,13 +70,13 @@ class Account extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'username' => 'Username',
-            'password' => 'Password',
-            'description' => 'Description',
-            'portal_id' => 'Portal ID',
-            'date_added' => 'Date Added',
-            'status' => 'Status',
-            'added_by' => 'Added By',
+            'username' => 'Имя/адрес электронной почты',
+            'password' => 'Пароль',
+            'description' => 'Описание/дополнительная информация',
+            'portal_id' => 'Портал',
+            'date_added' => 'Дата добавления',
+            'status' => 'Статус аккаунта',
+            'added_by' => 'Добавил пользователь',
         ];
     }
 

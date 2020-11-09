@@ -5,6 +5,7 @@ namespace frontend\models\portal;
 use frontend\components\behaviors\CommonModelBehavior;
 use Yii;
 use frontend\models\User;
+use frontend\models\portal\queries\PortalQuery;
 
 /**
  * This is the model class for table "portal".
@@ -30,6 +31,11 @@ class Portal extends \yii\db\ActiveRecord
     {
         return '{{%portal}}';
     }
+
+    /**
+     * @var
+     */
+    public $logoFile;
 
     /**
      * Поведения
@@ -62,6 +68,12 @@ class Portal extends \yii\db\ActiveRecord
                 'targetClass' => User::className(),
                 'targetAttribute' => ['added_by' => 'id']
             ],
+            [
+                ['logoFile'],
+                'file',
+                'skipOnEmpty' => false,
+                'extensions' => 'png, jpg, bmp, gif',
+            ],
         ];
     }
 
@@ -72,13 +84,13 @@ class Portal extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'url' => 'Url',
-            'description' => 'Description',
-            'status' => 'Status',
-            'added_by' => 'Added By',
-            'date_added' => 'Date Added',
-            'logo_path' => 'Logo Path',
+            'name' => 'Название портала',
+            'url' => 'Адрес портала',
+            'description' => 'Описание портала',
+            'status' => 'Статус портала',
+            'added_by' => 'Добавивший пользователь',
+            'date_added' => 'Дата добавления',
+            'logo_path' => 'Логотип портала',
         ];
     }
 
@@ -97,9 +109,9 @@ class Portal extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|PortalAccountQuery
      */
-    public function getPortalAccounts()
+    public function getAccounts()
     {
-        return $this->hasMany(PortalAccount::className(), ['portal_id' => 'id']);
+        return $this->hasMany(Account::className(), ['portal_id' => 'id']);
     }
 
     /**
@@ -110,4 +122,10 @@ class Portal extends \yii\db\ActiveRecord
     {
         return new PortalQuery(get_called_class());
     }
+
+    public function uploadLogo()
+    {
+
+    }
+
 }
