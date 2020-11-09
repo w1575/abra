@@ -7,15 +7,15 @@ use yii\widgets\Pjax;
 /* @var $searchModel frontend\models\portal\search\Portal */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Portals';
+$this->title = 'Порталы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="portal-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+
 
     <p>
-        <?= Html::a('Create Portal', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить портал', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>

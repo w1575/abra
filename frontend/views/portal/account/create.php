@@ -5,13 +5,12 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\portal\Account */
 
-$this->title = 'Create Account';
-$this->params['breadcrumbs'][] = ['label' => 'Accounts', 'url' => ['index']];
+$this->title = 'Добавление аккаунта';
+$this->params['breadcrumbs'][] = ['label' => 'Аккаунты', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="account-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="account-create">
 
     <?= $this->render('_form', [
         'model' => $model,

@@ -7,13 +7,10 @@ use yii\widgets\Pjax;
 /* @var $searchModel frontend\models\portal\search\Account */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Accounts';
+$this->title = 'Аккаунты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="account-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('Create Account', ['create'], ['class' => 'btn btn-success']) ?>
     </p>

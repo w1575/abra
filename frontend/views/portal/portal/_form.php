@@ -26,6 +26,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'logo_path')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'logoFile')->fileInput() ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
