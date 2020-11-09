@@ -58,7 +58,7 @@ class CommonModelBehavior extends \yii\base\Behavior
     /**
      * @return bool
      */
-    private function doThingsBeforeInsert()
+    public function doThingsBeforeInsert()
     {
         $this->setDateAdded();
         $this->setAddedBy();
@@ -68,7 +68,7 @@ class CommonModelBehavior extends \yii\base\Behavior
     /**
      * @return bool
      */
-    private function doThingsBeforeUpdate()
+    public function doThingsBeforeUpdate()
     {
         return true;
     }
@@ -86,11 +86,12 @@ class CommonModelBehavior extends \yii\base\Behavior
      */
     private function setDateAdded()
     {
-        $this->owner->date_added = (new \DateTime(
+        $date = (new \DateTime(
             'now',
             new \DateTimeZone($this->getTimeZone())
-            )
-        );
+        )
+        )->format('d.m.Y h:i');
+        $this->owner->date_added = $date;
     }
 
     /**
