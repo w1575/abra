@@ -1,3 +1,4 @@
+@charset "UTF-8";
 header nav.navbar {
   padding: 0;
 }
@@ -43,6 +44,25 @@ section.content-main {
 
 .tab-content-wrap {
   margin-top: 15px;
+}
+
+.glyphicon {
+  font-family: "FontAwesome";
+}
+
+.glyphicon-eye-open:before {
+  content: "";
+  color: var(--success);
+}
+
+.glyphicon-pencil:before {
+  content: "";
+  color: var(--primary);
+}
+
+.glyphicon-trash:before {
+  content: "🗑";
+  color: var(--danger);
 }
 
 /*# sourceMappingURL=main.css.map */
