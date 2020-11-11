@@ -24,9 +24,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'date_added')->textInput() ?>
 
-    <?= $form->field($model, 'logo_path')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'logo_name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'logoFile')->fileInput() ?>
+
+    <?php // if ($model->deleteLogo != 0 and $model->logo_name !== null): ?>
+    <?= $form
+            ->field($model, 'deleteLogo')
+            ->checkbox()
+            ->hint("Если Вы загружаете новый логотип, то старый будет удален автоматически.")
+    ?>
+    <?php // endif;?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

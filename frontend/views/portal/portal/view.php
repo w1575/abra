@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'status',
             'added_by',
             'date_added',
-            'logo_path',
+            'logo_name',
         ],
     ]) ?>
 

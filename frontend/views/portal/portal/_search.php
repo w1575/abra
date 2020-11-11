@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'date_added') ?>
 
-    <?php // echo $form->field($model, 'logo_path') ?>
+    <?php // echo $form->field($model, 'logo_name') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
