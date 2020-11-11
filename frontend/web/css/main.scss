@@ -50,3 +50,19 @@ section.content-main {
 .tab-content-wrap {
   margin-top: 15px;
 }
+
+.glyphicon {
+  font-family: "FontAwesome";
+}
+.glyphicon-eye-open:before {
+  content: "\f06e";
+  color: var(--success);
+}
+.glyphicon-pencil:before {
+  content: "\f044";
+  color: var(--primary);
+}
+.glyphicon-trash:before {
+  content: "\01F5D1";
+  color: var(--danger);
+}
