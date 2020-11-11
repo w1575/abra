@@ -3,9 +3,11 @@
 namespace frontend\models\portal;
 
 use frontend\components\behaviors\CommonModelBehavior;
+use frontend\components\behaviors\ModelFileBehavior;
 use Yii;
 use frontend\models\User;
 use frontend\models\portal\queries\PortalQuery;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "portal".
@@ -17,7 +19,7 @@ use frontend\models\portal\queries\PortalQuery;
  * @property int|null $status Статус портала
  * @property int|null $added_by Добавивший пользователь
  * @property string|null $date_added Дата добавления
- * @property string|null $logo_path Логотип портала
+ * @property string|null $logo_name Логотип портала
  *
  * @property User $addedBy
  * @property PortalAccount[] $portalAccounts
@@ -25,17 +27,49 @@ use frontend\models\portal\queries\PortalQuery;
 class Portal extends \yii\db\ActiveRecord
 {
     /**
+     * Путь к общей папке с загрузкой
+     */
+//    public const UPLOAD_FOLDER_PATH = "uploads/portal/logo";
+    /**
+     * Путь к папке с оригинальнными загружаемыми картинками логотипов
+     */
+    private const UPLOAD_FOLDER_ORIGIN = "@frontend/web/uploads/portals/logos/origins";
+    /**
+     * Путь к папке с жатыми картинками логотипов
+     */
+    private const UPLOAD_FOLDER_PREVIEW = '@frontend/web/uploads/portals/logos/previews';
+
+    private const FILES_WEB_FILE_PATH = '/uploads/portals';
+
+    /**
+     * @var UploadedFile
+     */
+    public $logoFile;
+    /**
+     * @var string путь
+     */
+    private $logoName;
+    /**
+     * @var
+     */
+    public $deleteLogo = 0;
+
+    /**
+     * Имя сценария создания
+     */
+    public const SCENARIO_CREATE = 'scenarioCreate';
+    /**
+     * Имя сценария редактирования
+     */
+    public const SCENARIO_UPDATE = 'scenarioUpdate';
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
         return '{{%portal}}';
     }
-
-    /**
-     * @var
-     */
-    public $logoFile;
 
     /**
      * Поведения
@@ -47,6 +81,9 @@ class Portal extends \yii\db\ActiveRecord
         $list['common'] = [
             'class' => CommonModelBehavior::class,
         ];
+        $list['file'] = [
+            'class' => ModelFileBehavior::class,
+        ];
         return $list;
     }
 
@@ -56,12 +93,12 @@ class Portal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['url', 'description'], 'string'],
+            [['description'], 'string'],
             [['status', 'added_by'], 'default', 'value' => null],
             [['status', 'added_by'], 'integer'],
             [['date_added'], 'safe'],
-            [['name'], 'string', 'max' => 256],
-            [['logo_path'], 'string', 'max' => 512],
+            [['name', 'url'], 'string', 'max' => 256],
+            [['logo_name'], 'string', 'max' => 512],
             [['added_by'],
                 'exist',
                 'skipOnError' => true,
@@ -71,8 +108,13 @@ class Portal extends \yii\db\ActiveRecord
             [
                 ['logoFile'],
                 'file',
-                'skipOnEmpty' => false,
+                'skipOnEmpty' => true,
                 'extensions' => 'png, jpg, bmp, gif',
+            ],
+            [
+                'deleteLogo',
+                'in',
+                'range' => [0, 1]
             ],
         ];
     }
@@ -90,7 +132,9 @@ class Portal extends \yii\db\ActiveRecord
             'status' => 'Статус портала',
             'added_by' => 'Добавивший пользователь',
             'date_added' => 'Дата добавления',
-            'logo_path' => 'Логотип портала',
+            'logo_name' => 'Логотип портала',
+            'deleteLogo' => 'Удалить существующий логотип',
+            'logoFile' => 'Загрузить логотип',
         ];
     }
 
@@ -123,9 +167,100 @@ class Portal extends \yii\db\ActiveRecord
         return new PortalQuery(get_called_class());
     }
 
+    /**
+     * @param $extension
+     * @throws \yii\base\Exception
+     */
+    private function generateFileName($extension)
+    {
+        $this->logoName = "logo_" . \yii::$app->security->generateRandomString(16) . ".$extension";
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\Exception
+     */
     public function uploadLogo()
     {
+        if ($this->logoFile !== null) {
+            $this->generateFileName($this->logoFile->extension);
+            $isFileSaved = $this->logoFile->saveAs(
+                static::UPLOAD_FOLDER_ORIGIN . "/{$this->logoName}"
+            );
+            if ($isFileSaved === true) {
+                $this->logo_name = $this->logoName;
+            }
+            return $isFileSaved;
+        }
 
+        return true;
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if ($this->deleteLogo() === false) {
+            return false;
+        }
+
+        if ($this->uploadLogo() === false) {
+            return false;
+        }
+        return parent::beforeSave($insert); // TODO: Change the autogenerated stub
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebLogosPath()
+    {
+        return static::FILES_WEB_FILE_PATH . "/logos";
+    }
+
+    /**
+     * @return string
+     */
+    public function getPreviewFilePath()
+    {
+        return $this->getWebLogosPath() . "/previews/{$this->logo_name}";
+    }
+
+    /**
+     * @return bool
+     */
+    private function deleteLogo()
+    {
+        if ($this->deleteLogo == 1) {
+            if ($this->logo_name !== null) {
+                $this->softDeleteFile('logo_name');
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @return array|array[]|\string[][]
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[static::SCENARIO_CREATE]
+            = $scenarios[static::SCENARIO_UPDATE]
+            = [
+                'name',
+                'url',
+                'description',
+                // 'status',
+                // 'added_by',
+                // 'date_added',
+                // 'logo_name',
+            ]
+        ;
+        return $scenarios;
     }
 
 }

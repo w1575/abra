@@ -18,7 +18,7 @@ class Portal extends PortalModel
     {
         return [
             [['id', 'status', 'added_by'], 'integer'],
-            [['name', 'url', 'description', 'date_added', 'logo_path'], 'safe'],
+            [['name', 'url', 'description', 'date_added', 'logo_name'], 'safe'],
         ];
     }
 
@@ -67,7 +67,7 @@ class Portal extends PortalModel
         $query->andFilterWhere(['ilike', 'name', $this->name])
             ->andFilterWhere(['ilike', 'url', $this->url])
             ->andFilterWhere(['ilike', 'description', $this->description])
-            ->andFilterWhere(['ilike', 'logo_path', $this->logo_path]);
+            ->andFilterWhere(['ilike', 'logo_name', $this->logo_name]);
 
         return $dataProvider;
     }
