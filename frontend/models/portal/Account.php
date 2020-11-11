@@ -56,6 +56,8 @@ class Account extends \yii\db\ActiveRecord
             [['portal_id', 'status', 'added_by'], 'default', 'value' => null],
             [['portal_id', 'status', 'added_by'], 'integer'],
             [['date_added'], 'safe'],
+            [['status'], 'default', 'value' => 1],
+            [['status'], 'in', 'range' => [0, 1]],
             [['username'], 'string', 'max' => 128],
             [['password'], 'string', 'max' => 64],
             [['portal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Portal::className(), 'targetAttribute' => ['portal_id' => 'id']],
