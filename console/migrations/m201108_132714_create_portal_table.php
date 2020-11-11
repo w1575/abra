@@ -18,12 +18,12 @@ class m201108_132714_create_portal_table extends Migration
         $this->createTable('{{%portal}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string(256)->comment('Название портала'),
-            'url' => $this->text(256)->comment('Адрес портала'),
+            'url' => $this->string(256)->comment('Адрес портала'),
             'description' => $this->text()->comment('Описание портала'),
             'status' => $this->integer(1)->comment('Статус портала'),
             'added_by' => $this->integer()->comment('Добавивший пользователь'),
             'date_added' => $this->dateTime()->comment('Дата добавления'),
-            'logo_path' => $this->string(512)->comment('Логотип портала'),
+            'logo_name' => $this->string(512)->comment('Логотип портала'),
         ]);
 
         // creates index for column `added_by`
