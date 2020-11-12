@@ -79,6 +79,8 @@ class ModelFileBehavior extends \yii\base\Behavior
                     }
                 }
         }
+        $this->owner->$fileAttribute = null;
+        return  $this->owner->save();
 //        foreach ($this->filesList as $currentFileName => $filePaths) {
 //            if ($currentFileName == $this->owner->$fileAttribute) {
 //                foreach ($filePaths as $index => $filePath) {
