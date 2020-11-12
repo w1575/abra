@@ -12,7 +12,7 @@ class ModelFileBehavior extends \yii\base\Behavior
      * @var string директория, в которой будут храниться удаленные файлы
      * @example  '@frontend/web/uploads/deleted'
      */
-    public $trashFolder;
+    public $trashFolder = '@frontend/web/uploads/deleted';
     /**
      * Массив вида
      * [
@@ -27,6 +27,37 @@ class ModelFileBehavior extends \yii\base\Behavior
      */
     public $filesList = [];
 
+    /**
+     * Удаление файла в "корзину"
+     * @param $filePath
+     * @return bool
+     */
+    private function softDelete($filePath, $name)
+    {
+        $trashFolderFullPath = \yii::getAlias($this->trashFolder);
+        $fullPath = \yii::getAlias("@{$filePath}/{$name}");
+        $newFolderPath = $trashFolderFullPath . "/{$filePath}";
+        if (is_dir($newFolderPath) === false) {
+            if (mkdir("{$newFolderPath}/", 0777, true) === false) {
+                throw new \Exception('Не удалось создать директорию в корзине');
+            }
+        }
+        if (file_exists($fullPath) === true) {
+            return rename($fullPath, $newFolderPath . "/{$name}");
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $path
+     * @return bool
+     */
+    private function hardDelete($path)
+    {
+        return unlink($path);
+    }
+
 
     /**
      * @param $fileName
@@ -35,11 +66,31 @@ class ModelFileBehavior extends \yii\base\Behavior
     {
         $this->checkSettings();
 
-        foreach ($this->filesList as $currentFileName => $filePath) {
-            if ($currentFileName == $fileAttribute) {
-                file_exists('');
-            }
+        if (isset($this->filesList[$fileAttribute])) {
+            foreach ($this->filesList[$fileAttribute] as $index => $filePath) {
+                    $fileName = $this->owner->$fileAttribute;
+                    if ($this->trashFolder !== null) {
+                        if ($this->softDelete($filePath, $fileName) === false) {
+                            $this->owner->addError($fileAttribute, "Не удалось удалить файл {$fileName}");
+                        }
+                    } else {
+                        $fullPath = \yii::getAlias("@{$filePath}/{$fileName}");
+                        $this->hardDelete($fullPath);
+                    }
+                }
         }
+//        foreach ($this->filesList as $currentFileName => $filePaths) {
+//            if ($currentFileName == $this->owner->$fileAttribute) {
+//                foreach ($filePaths as $index => $filePath) {
+//                    if ($this->trashFolder !== null) {
+//                        $this->softDelete();
+//                    } else {
+//                        $this->hardDelete();
+//                    }
+//                }
+//
+//            }
+//        }
     }
 
     /**
@@ -58,8 +109,8 @@ class ModelFileBehavior extends \yii\base\Behavior
             }
         }
 
-        if ($this->trashFolder === null) {
-            throw new \Exception('Поведение настроено неверно: необходимо указать путь к "корзине".');
-        }
+//        if ($this->trashFolder === null) {
+//            throw new \Exception('Поведение настроено неверно: необходимо указать путь к "корзине".');
+//        }
     }
 }
