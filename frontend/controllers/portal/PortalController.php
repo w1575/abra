@@ -78,7 +78,8 @@ class PortalController extends MainController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        $model->scenario = Portal::SCENARIO_UPDATE;
+        $model->logoFile = UploadedFile::getInstance($model, 'logoFile');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }

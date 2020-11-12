@@ -36,7 +36,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'status',
             'added_by',
             'date_added',
-            'logo_name',
+            [
+                'attribute' => 'logoUrl',
+                'format' => 'raw',
+                'value' => function($model) {
+                    return Html::img($model->logoUrl);
+                }
+            ]
+            ,
         ],
     ]) ?>
 

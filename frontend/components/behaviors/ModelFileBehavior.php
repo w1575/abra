@@ -4,6 +4,8 @@
 namespace frontend\components\behaviors;
 
 
+use yii\helpers\FileHelper;
+
 class ModelFileBehavior extends \yii\base\Behavior
 {
     /**
@@ -35,7 +37,7 @@ class ModelFileBehavior extends \yii\base\Behavior
 
         foreach ($this->filesList as $currentFileName => $filePath) {
             if ($currentFileName == $fileAttribute) {
-
+                file_exists('');
             }
         }
     }
