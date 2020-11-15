@@ -1,5 +1,4 @@
 .htaccess
-uploads/portals/logos/origins/*
-uploads/portals/logos/previews/*
+uploads/*
 !uploads/portals/logos/origins/index.html
 !uploads/portals/logos/previews/index.html
