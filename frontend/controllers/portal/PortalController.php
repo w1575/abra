@@ -57,7 +57,7 @@ class PortalController extends MainController
         $model = new Portal();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->logoFile = UploadedFile::getInstance($model, 'logoFile');
+            // $model->logoFile = UploadedFile::getInstance($model, 'logoFile');
             if ($model->validate() === true and $model->save() === true) {
                 return $this->redirect(['index']);
             }
