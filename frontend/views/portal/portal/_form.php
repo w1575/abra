@@ -28,9 +28,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'logoFile')->fileInput() ?>
 
-    <?php // if ($model->deleteLogo != 0 and $model->logo_name !== null): ?>
-    <?php if ($model->logoUrl !== null): ?>
-    <?= Html::img($model->logoUrl) ?>
+    <?php $imgUrl = $model->getImageUrl('logoFile') ?>
+    <?php if ($imgUrl !== null): ?>
+    <?= Html::img($imgUrl) ?>
     <?php endif; ?>
     <?= $form
             ->field($model, 'deleteLogo')
