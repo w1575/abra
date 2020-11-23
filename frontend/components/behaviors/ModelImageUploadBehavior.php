@@ -13,250 +13,179 @@ use yii\web\UploadedFile;
 class ModelImageUploadBehavior extends \yii\base\Behavior
 {
     /**
-     * @var string|bool директория, в которой будут храниться удаленные файлы, если указан false, то файлы будут
-     * удалять сосвсем
-     * @example  '@frontend/web/uploads/deleted'
-     */
-    public $trashFolder = '@frontend/web/uploads/deleted';
-    /**
-     * @var string путь к папке
+     * @var string путь на основании которого будет генерироваться ссылка на изображение
      */
     public $webPath;
     /**
-     * @var string глобальный путь, по которому будут сохранятся все файлы модели
-     * Например '/uploads/avatars'
+     * @var string путь до папки на стороне сервера. Например 'frontend/web/uploads'
      */
-    public $globalPath;
+    public $folderAlias;
     /**
-     * @var int длина генерируемого префикса загружаемого файла
+     * @var bool если true то будет сгенерировано произваольное имя для файла
      */
-    public $filePrefixLength = 0;
+    public $generateName = false;
     /**
-     * @var int ширина изображения
+     * @var int длина генерируемого имени
      */
-    public $imgWidth;
+    public $generatedNameLength = 12;
     /**
-     * @var int высота изображения
+     * @var int
      */
-    public $imgHeight;
+    public $previewHeight = 50;
     /**
-     * @var int значение качества при сжатии
+     * @var int
      */
-    public $quality = 85;
+    public $previewWidth = 50;
     /**
-     * @var string название события, после которого должна выполняться загрузка файла
+     * @var int  настройки качества превьюшки
      */
-    public $uploadEventName = ActiveRecord::EVENT_AFTER_VALIDATE;
+    public $previewQuality = 90;
     /**
-     * @var bool необходимо ли удалять предыдущий файл
+     * @var string префикс для генерируемой превью изображения
      */
-    public $deletePrevious = true;
+    public $previewPrefix = '';
     /**
-     * @var string название ивента по которому нужно удалить изображение
+     * @var string|bool название директории, в которой будут храниться превьюшки. Можнно хранить в основной директории
+     * однако для этого нужно будет указать параметр $previewPrefix, чтобы превью не заменило основную картинку.
      */
-    public $deleteImageEvent = ActiveRecord::EVENT_BEFORE_DELETE;
+    public $previewSubFolder = '/previews';
     /**
-     * @var string аттрибут, который должен проверяться для удаления
+     * @var string имя аттрибута, который указывает на то, какие изображения нужно удалить
      */
-    public $deleteFileAttribute;
+    public $deleteAttribute = '';
     /**
-     * Массив вида
-     * [
-     *      'imageAttribute' => [
-     *          'dbAttribute' => 'logo_path', // колонка в базе, в которую нужно записать путь к файлу (будет записано имя файла)
-     *          'subFolder' => '/filePreview' // субдиректория, в которую нужно переместить файл
-     *          'folderPath' => 'frontend/web/uploads', // путь к папке, если указан, то будет игнорирован глобальный     *
-     *          'width' => 125 // ширина ,
-     *          'height' => 65 // высотка изображения,
-     *          'webPath' => '/avatars/previews' - путь по которому хранятся изображения данного аттрибута
-     *          // если файл не явялется изображением, то соответствено эти параметры не будут учитываться
-     *
-     *      ],
-     *      // можно указать несколько путей к файлу, например если есть превью картинок
-     *      //
-     * ]
-     * @var array
+     * @var bool генерировать ли превью для файла
      */
-    public $attributesSetting = [];
+    public $generatePreview = true;
+    /**
+     * @var array хранятся параметры аттриубута
+     */
+    private $attributeParams = [];
 
     /**
-     * @return array
+     * Настройки изображения. Пример
+        [
+            'logoAttribute' => [
+                'dbAttribute' => 'logo_name', // обязательный аттриубт
+                // индивидуальные настройки для каждого аттрибута здесь
+                // если они не указаны то будут использованы глобальные
+                'webPath' => '/uploads/logos',
+                'folderAlias' => 'frontend/web/uploads/logos',
+                'previewFolder' => false,
+                'previewPrefix' => 'preview_',
+                'generateName' => true,
+
+            ],
+            'anotherImgAttribute' => [
+                'dbAttribute' => 'img', // обязательный аттрибут
+                // если не нужны индивидуальные настройки
+
+            ],
+        ]
+     *
+     * @var array|string
+     */
+    public $attributesSettings = [];
+
+    /**
+     * @return array|string[]
      */
     public function events()
     {
-        $events = parent::events();
-        if ($this->uploadEventName !== false) {
-            $events[$this->uploadEventName] = 'uploadFiles';
-        }
-        $events[ActiveRecord::EVENT_BEFORE_VALIDATE] = 'setInstances';
-        return $events;
+        return [
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'getFilesInstances',
+            ActiveRecord::EVENT_BEFORE_INSERT => 'uploadFiles',
+            ActiveRecord::EVENT_BEFORE_UPDATE => 'uploadFiles',
+        ];
     }
 
+    /**
+     * Записыват instance загруженного файла в выбранные аттриубуты моделей, дабы они провалидировались
+     */
+    public function getFilesInstances()
+    {
+        foreach ($this->attributesSettings as $attributeName => $attributesSetting) {
+            $this->owner->$attributeName = UploadedFile::getInstance($this->owner, $attributeName);
+        }
+    }
 
     /**
-     * Делаем штуки при инициализации
      * @throws \Exception
      */
     public function init()
     {
-        if (empty($this->attributesSetting)) {
-            throw new \Exception('Неверная конфигурация поведения: \'attributeSetting\' не может быть пустым');
-        }
+        $errorBegin = "Не указан обязательный атрибут: ";
+//        if ($this->webPath === null) {
+//            throw new \Exception("$errorBegin webPath.");
+//        }
+//
+//        if ($this->folderAlias === null) {
+//            throw new \Exception("$errorBegin folderAlias.");
+//        }
+//
+//        if ($this->dbAttribute === null) {
+//            throw new \Exception("Не указан обязательный атрибут dbAttribute.");
+//        }
 
-        foreach ($this->attributesSetting as $index => $attributeSetting) {
-            $this->validateGlobalParam('webPath', $attributeSetting);
-            $this->validateGlobalParam('globalPath', $attributeSetting);
-        }
-
-
-    }
-
-    /**
-     * Проверка устновки глобальных параметров.
-     * @param $paramName
-     * @param $attrbiteSetting
-     * @throws \Exception
-     */
-    private function validateGlobalParam($paramName, $attrbiteSetting)
-    {
-        if (empty($this->$paramName) and empty($attrbiteSetting[$paramName])) {
-            throw new \Exception("Неверная конфигурация поведения: {$paramName} должен быть установлен как минимум глобально");
-        }
-    }
-
-    /**
-     * Устаналвивает экземпляр UploadedFile в соответствующие им аттриубуты модели-владельца
-     */
-    public function setInstances()
-    {
-        foreach ($this->attributesSetting as $fileAttribute => $attributeSetting) {
-            $this->owner->logoFile = UploadedFile::getInstance($this->owner, $fileAttribute);
+        foreach ($this->attributesSettings as $index => $attributesSetting) {
+            if (isset($attributesSetting['dbAttribute']) === false) {
+                throw new \Exception("$errorBegin dbAttribute");
+            }
         }
 
     }
 
     /**
-     * Возвращает префикс для загруженного файла
-     * @return string
-     * @throws \yii\base\Exception
+     * Если указаны индивидуальные настройки для атриубута, то то берутся они.
+     * @param $settingName
+     * @return mixed
      */
-    public function getPrefix()
+    private function getSetting($settingName)
     {
-        $length = (int)$this->filePrefixLength;
-        if ($length > 0) {
-            return \yii::$app->security->generateRandomString($length) . "_";
-        }
-
-        return '';
+        return $this->attributeParams[$settingName] ?? $this->{$settingName};
     }
-
-    /**
-     * Изменяет размер и качество загруженного изображения.
-     * @param $filePath
-     * @param $params
-     * @return bool
-     */
-    public function resizeImage($filePath, $params)
-    {
-        $width = $params['width'] ?? $this->imgWidth;
-        $height = $params['height'] ?? $this->imgHeight;
-        if ((int)$width === 0 or (int)$height === 0 ) {
-            return true;
-        }
-
-        $imagine = Image::getImagine();
-        $thumb = $imagine->open($filePath);
-        $thumb->resize(
-                new Box($width, $height)
-            )
-            ->save(
-                $filePath,
-                [
-                    'quality' => $this->quality
-                ]
-            );
-    }
-
 
     /**
      * @return false
-     * @throws \yii\base\Exception
      */
     public function uploadFiles()
     {
-        if ($this->owner->hasErrors() === false) {
-            $uploadedList = [];
-            foreach ($this->attributesSetting as $fileAttribute => $attributeSetting) {
-                $imageInstance = $this->owner->$fileAttribute;
-                if ($imageInstance !== null) {
-                    $filePath =
-                        ($attributeSetting['folderPath'] ?? $this->globalPath)
-                        . ($attributeSetting['subFolder'] ?? '')
-                    ;
+        if ($this->owner->hasErrors() === true) {
+            return false;
+        }
 
-                    $filePath = \yii::getAlias("@{$filePath}");
+        $a = $this->owner->hasErrors();
 
-                    $fileName =
-                        $this->getPrefix()
-                        ."{$imageInstance->name}";
-                    $fullPath = $filePath . "/{$fileName}";
-                    $uploaded = $imageInstance->saveAs($fullPath);
-
-                    if ($uploaded === true) {
-                        if (isset($attributeSetting['dbAttribute'])) {
-                            $this->owner->{$attributeSetting['dbAttribute']} = $fileName;
-                        }
-
-                        $uploadedList =  $filePath . $fileName;
-                        // добавляем полный путь к загруженному файлу в массив, чтобы в случае, если оди из других файлов
-                        // не будет загружен можно было загруженные быстренько удалить
-                        $this->resizeImage($fullPath, $attributeSetting);
-                    } else {
-                        $this->owner->addError(
-                            $fileAttribute,
-                            "Не удалось загрузить файл {$imageInstance->name}."
-                        );
-                        foreach ($uploadedList as $index => $item) {
-                            \unlink($item);
-                        }
-
-                        return false;
-                    }
-
-                }
+        foreach ($this->attributesSettings as $attributeName => $attributesSetting) {
+            
+            if ($this->owner->$attributeName === null) {
+                continue;
             }
+
+            $this->attributeParams = $attributesSetting;
+            $folderPath = \yii::getAlias("@{$this->getSetting('folderAlias')}");
+            $attribute =  $this->owner->{$attributeName};
+            $fileName = (
+                $this->getSetting('generateName') === true
+                ? \yii::$app->security->generateRandomString($this->generatedNameLength)
+                : $this->owner->{$attributeName}->baseName
+                )
+                . ".{$this->owner->{$attributeName}->extension}"
+            ;
+            if (is_dir($folderPath) == false) {
+                \mkdir($folderPath, 0777, true);
+            }
+            $this->owner->$attributeName->saveAs("{$folderPath}/{$fileName}");
+
         }
     }
 
-    /**
-     * Возвращает ссылку на загруженный файл (доступную из веб)
-     * @param $attributeName
-     * @throws \Exception
-     */
-    public function getImageUrl($attributeName)
+    public function getImageUrl()
     {
-        $attributeSetting = $this->attributesSetting[$attributeName];
-        if (! isset($attributeSetting) or empty($attributeSetting)) {
-            throw new \Exception('Настроек для данного аттриубута не найдено');
-        }
-
-        if (!isset($attributeSetting['dbAttribute'])) {
-            throw new \Exception("Вам нужно указать аттрибут, в котором хранится имя загруженного файла.");
-        }
-        $attribute = $attributeSetting['dbAttribute'];
-
-        if (empty($this->owner->{$attribute})) {
-            return null;
-        }
-
-        $webPath =
-            ($attributeName['webPath'] ?? $this->webPath)
-            . (isset($attributeSetting['subFolder']) ?? '')
-        ;
-
-        return $webPath . "/{$this->owner->{$attribute}}";
-
+        return 'ЛОЛ';
     }
+
+
 
 
 }
