@@ -28,7 +28,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'logoFile')->fileInput() ?>
 
-    <?php $imgUrl = $model->getImageUrl('logoFile') ?>
+    <?php $imgUrl = $model->getPreviewLink('logoFile') ?>
     <?php if ($imgUrl !== null): ?>
     <?= Html::img($imgUrl) ?>
     <?php endif; ?>

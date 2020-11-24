@@ -40,9 +40,9 @@ class Portal extends \yii\db\ActiveRecord
     /**
      * Путь к папке с жатыми картинками логотипов
      */
-    public const UPLOAD_FOLDER = 'frontend/web/uploads/portals/logos';
+    public const UPLOAD_FOLDER = 'frontend/web/uploads/portals';
 
-    public const FILES_WEB_FILE_PATH = '/uploads/portals/logos';
+    public const FILES_WEB_FILE_PATH = '/uploads/portals';
     /**
      * Ширина превьюшки логотипа
      */
@@ -94,16 +94,54 @@ class Portal extends \yii\db\ActiveRecord
         ];
         $list['file'] = [
             'class' => ModelImageUploadBehavior::class,
-            'filePrefixLength' => '6',
-            'webPath' => static::FILES_WEB_FILE_PATH,
-            'globalPath' => static::UPLOAD_FOLDER,
-            'attributesSetting' => [
-                'logoFile' => [
-                    'dbAttribute' => 'logo_name',
-                    'width' => 125,
-                    'height' => 90,
-                    'subfolder' => '/previews/',
-                ],
+//            'filePrefixLength' => '6',
+//            'webPath' => static::FILES_WEB_FILE_PATH,
+//            'folderPath' => static::UPLOAD_FOLDER,
+//            'attributesSetting' => [
+//                'logoFile' => [
+//                    'dbAttribute' => 'logo_name',
+//                    'width' => 125,
+//                    'height' => 90,
+//                    'subfolder' => '/previews/',
+//                ],
+//            ],
+            'attributesSettings' => [
+//                'logoFile' => [
+//                    'dbAttribute' => 'logo_path', // колонка в базе, в которую нужно записать путь к файлу (будет записано имя файла)
+//                    'folderSettings' => [ //
+//                        'folderPath' => static::UPLOAD_FOLDER, // если нужно, чтобы изоюаржения данного аттрибута помещались
+//                        // в отличную от глобальной директорию парметр subFolder будет проигнорирован
+//                        'subFolder' => '/logos', // поддиректория в которую следует помещать изображения данного аттриубута
+//                        'webPath' => static::FILES_WEB_FILE_PATH // необходимо для получения ссылки на файл, доступной из web
+//                    ],
+//                    'previewSettings' => [ // настройки превью изображения, если не указан, то превью не будет создано
+//                        'folder' => '/previews', //директория в которую нужно помещать загруженные изображения
+//                        'width' => 125, // ширина превью
+//                        'height' => 75, // высота превью
+//                    ],
+//                    'deleteAttribute' => 'deleteLogo', // может быть использован, если например удаление
+//                    'multiple' => false, // если с помощью данного аттрибута загружается несколько файлов то это немного
+//                    // изменяет логику и в базу, если нужно, будет записан путь не для конкретного файла, а путь до папки
+//                    // с файлами. TODO: пока что на будущее. пока что реализация не требуется.
+//                ],
+                    'logoFile' => [
+                        'dbAttribute' => 'logo_name',
+                        'webPath' => static::FILES_WEB_FILE_PATH,
+                        'folderAlias' => static::UPLOAD_FOLDER,
+                        'generateName' => true,
+                        'generatedNameLength'=> 15,
+                        'previewHeight' => 70,
+                        'previewWidth' => 125,
+                        'previewQuality' => 90,
+                        // 'previewPrefix' => 'thumb_',
+                        // 'previewPrefix' => '',
+                        'previewSubFolder' => false,
+                        // 'deleteAttribute',
+                        // 'generatePreview',
+                    ],
+
+
+
             ],
         ];
         return $list;

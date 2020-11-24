@@ -71,7 +71,7 @@ class ModelImageUploadBehavior extends \yii\base\Behavior
                 // если они не указаны то будут использованы глобальные
                 'webPath' => '/uploads/logos',
                 'folderAlias' => 'frontend/web/uploads/logos',
-                'previewFolder' => false,
+                'previewSubFolder' => false,
                 'previewPrefix' => 'preview_',
                 'generateName' => true,
 
@@ -175,14 +175,85 @@ class ModelImageUploadBehavior extends \yii\base\Behavior
             if (is_dir($folderPath) == false) {
                 \mkdir($folderPath, 0777, true);
             }
-            $this->owner->$attributeName->saveAs("{$folderPath}/{$fileName}");
+            $fullPath = "{$folderPath}/{$fileName}";
+            $this->owner->$attributeName->saveAs($fullPath);
 
+            $generatePreview = $this->getSetting('generatePreview');
+
+            if ($generatePreview === true) {
+                $subFolder = $this->getSetting('previewSubFolder');
+                $previewFolder =
+                    (
+                        empty($subFolder)
+                        ? $folderPath
+                        : $folderPath . "/" .$subFolder
+                    ) . "/" ;
+                if (is_dir($previewFolder) === false) {
+                    mkdir($previewFolder, 0777, true);
+                }
+                $previewPath = $previewFolder . $this->getSetting('previewPrefix') . $fileName;
+                $height = $this->getSetting('previewHeight');
+                $width = $this->getSetting('previewWidth');
+                try {
+                    Image::thumbnail($fullPath, $width, $height)
+                        ->save(
+                            $previewPath,
+                            [
+                                'quality' => $this->getSetting('previewQuality')
+                            ]
+                        );
+                } catch (\Exception $e) {
+                    $this->owner->addError($attributeName, $e->getMessage());
+                    return false;
+                }
+                $this->owner->{$attributesSetting['dbAttribute']} = $fileName;
+            }
         }
     }
 
-    public function getImageUrl()
+    /**
+     * @param $attributeName
+     */
+    private function prepareAttributeSettings($attributeName)
     {
-        return 'ЛОЛ';
+        $this->attributeParams = $this->attributesSettings[$attributeName];
+    }
+
+    /**
+     * Возвращает ссылку на превью изображения
+     * @param $attributeName
+     */
+    public function getPreviewLink($attributeName)
+    {
+        $this->prepareAttributeSettings($attributeName);
+        $path = $this->getSetting('webPath');
+        $subFolder = $this->getSetting('previewSubFolder');
+        $path .= (
+            empty($subFolder)
+            ? "/"
+            : "/{$subFolder}/"
+        );
+        $prefix = $this->getSetting('previewPrefix');
+        $path .= (
+            empty($prefix)
+            ? ''
+            : "$prefix"
+        ) . $this->owner->{$this->getSetting('dbAttribute')}
+        ;
+
+        return $path;
+
+
+    }
+
+    /**
+     * @param $attributeName
+     */
+    public function getFullLink($attributeName)
+    {
+        $this->prepareAttributeSettings($attributeName);
+        $path = $this->getSetting('webPath');
+        return "{$path}/" . $this->owner->{$this->getSetting('dbAttribute')};
     }
 
 
