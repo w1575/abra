@@ -3,12 +3,12 @@
       'items' => [
           [
               'label' => 'Аккаунты',
-              'url' => ['/portal/account'],
+              'url' => \yii\helpers\Url::to(['/portal/account']),
               'active' => $this->context->id === 'portal/account',
           ],
           [
               'label' => 'Порталы',
-              'url' => ['/portal/portal'],
+              'url' => \yii\helpers\Url::to(['/portal/portal/index']),
               'active' => $this->context->id === 'portal/portal',
           ],
       ],

@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model frontend\models\portal\Portal */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Portals', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Порталы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>

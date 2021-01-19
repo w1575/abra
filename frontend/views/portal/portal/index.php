@@ -11,9 +11,6 @@ $this->title = 'Порталы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="portal-index">
-
-
-
     <p>
         <?= Html::a('Добавить портал', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
@@ -26,9 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'name',
+            [
+                'attribute' => 'name',
+                'format' => 'raw',
+                'value' => function($model) {
+                    return Html::a($model->name, ['portal/portal/view', 'id' => $model->id]);
+                }
+            ],
             'url:ntext',
             'description:ntext',
             'status',

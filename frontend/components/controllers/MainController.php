@@ -23,7 +23,6 @@ class MainController extends \yii\web\Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => [],
                         'allow' => true,
                         'roles' => ['@'],
                     ]

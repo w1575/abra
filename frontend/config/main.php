@@ -50,9 +50,12 @@ return [
         ],
 
         'urlManager' => [
+
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'portal' => 'portal/portal/index',
+                'portal/<action:[\w\+]>' => 'portal/portal/<action:[\w\+]>',
             ],
         ],
 

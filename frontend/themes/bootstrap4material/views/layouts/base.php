@@ -3,7 +3,6 @@
 use frontend\themes\bootstrap4material\assets\B4MaterialAsset;
 use yii\helpers\Html;
 ?>
-
 <?php B4MaterialAsset::register($this) ?>
 <?php \frontend\assets\AppAsset::register($this) ?>
 <!DOCTYPE html>
