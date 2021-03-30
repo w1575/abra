@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Html;
 ?>
+<?php \frontend\assets\AppAsset::register($this) ?>
+
 <?php $this->beginContent('@frontend/themes/bootstrap4material/views/layouts/topnav.php') ?>
 <div class="page-content d-flex align-items-stretch">
     <!-- Side Navbar -->

@@ -18,7 +18,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'portal_id')->textInput() ?>
+    <?= $form
+        ->field($model, 'portal_id')
+        ->dropDownList(
+            \frontend\models\portal\search\Portal::getIdAndNameListAsArrayMap(),
+            ['class' => 'select2-simple']
+        ) ?>
 
     <?= $form->field($model, 'date_added')->textInput() ?>
 

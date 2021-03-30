@@ -5,6 +5,7 @@ namespace frontend\models\portal\search;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\portal\Portal as PortalModel;
+use yii\helpers\ArrayHelper;
 
 /**
  * Portal represents the model behind the search form of `frontend\models\portal\Portal`.
@@ -70,5 +71,28 @@ class Portal extends PortalModel
             ->andFilterWhere(['ilike', 'logo_name', $this->logo_name]);
 
         return $dataProvider;
+    }
+
+    /**
+     * Возвращает список активных порталов в виде массива
+     * @return array|\frontend\models\portal\queries\Portal[]
+     */
+    public static function getIdAndNameList()
+    {
+        return static::find()
+                ->active()
+                ->select('id, name')
+                ->asArray()
+                ->all()
+            ;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getIdAndNameListAsArrayMap()
+    {
+        $list = static::getIdAndNameList();
+        return ArrayHelper::map($list,'id', 'name');
     }
 }

@@ -11,10 +11,10 @@ use frontend\components\query\CommomActiveQuery;
  */
 class PortalQuery extends CommomActiveQuery
 {
-    /*public function active()
+    public function active()
     {
         return $this->andWhere('[[status]]=1');
-    }*/
+    }
 
     /**
      * {@inheritdoc}

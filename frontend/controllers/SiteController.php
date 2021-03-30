@@ -45,7 +45,7 @@ class SiteController extends Controller
                         'roles' => ['?', '@'],
                     ],
                     [
-                        'actions' => ['signup', 'resend-verification-email'],
+                        'actions' => ['signup', 'resend-verification-email', 'reset-password'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -215,6 +215,7 @@ class SiteController extends Controller
      */
     public function actionResetPassword($token)
     {
+        $this->layout = 'login';
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidArgumentException $e) {

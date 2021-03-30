@@ -22,7 +22,8 @@ function checkNotificationsCount() {
             $('#notifications-count').text(count);
         },
         'error': function (params) {
-           alert('При проверки счетчика уведолмений произошла ошибка.')
+           console.log(params)
+           alert('При проверки счетчика уведомлений произошла ошибка.')
         }
     });
 

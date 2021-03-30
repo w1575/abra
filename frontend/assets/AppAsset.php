@@ -12,13 +12,17 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'plugins/select2/css/select2.css',
+        'plugins/select2/css/select2-bootstrap4.css',
         'css/main.css',
     ];
     public $js = [
+        'plugins/select2/js/select2.full.js',
+        'plugins/select2/js/i18n/ru.js',
+        'plugins/select2/select2-init.js',
         'js/main.js',
     ];
-//    public $depends = [
-//        'yii\web\YiiAsset',
-//        'yii\bootstrap4\BootstrapAsset',
-//    ];
+    public $depends = [
+        Bootstrap4Asset::class,
+    ];
 }
