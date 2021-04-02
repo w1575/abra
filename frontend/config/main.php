@@ -19,7 +19,7 @@ return [
         'view' => [
             'theme' => [
                 'basePath' => '@common/themes/AdminLTE3',
-                'baseUrl' => '@web/themes/bootstrap4material',
+//                'baseUrl' => '@web/themes/bootstrap4material',
 //                'pathMap' => [
 //                    '@app/views' => '@app/themes/basic',
 //                ],

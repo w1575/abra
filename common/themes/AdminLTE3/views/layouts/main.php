@@ -1,7 +1,9 @@
-<?php/* @var $this \yii\web\View */
+<?php
 
 /* @var $this \yii\web\View */
+/* @var $this \yii\web\View */
 /* @var $content string */
+
 ?>
 <?php $this->beginContent('@common/themes/AdminLTE3/views/layouts/base-sidebar.php') ?>
 <!-- Content Wrapper. Contains page content -->
