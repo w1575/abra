@@ -18,15 +18,17 @@ $this->params['breadcrumbs'][] = $this->title;
 //                            'layout' => 'inline',
             ]
     );?>
-
+<!--    <div class="input-group mb-3 login-input-wrap">-->
         <?= $form
             ->loginInput($model, 'username')
             // ->textInput(['autofocus' => true])
         ?>
-
+<!--    </div>-->
+<!--    <div class="input-group mb-3 login-input-wrap">-->
         <?= $form
             ->passwordInput($model, 'password')
         ?>
+<!--    </div>-->
 
         <div class="row">
             <div class="col-8">
