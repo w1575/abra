@@ -1752,14 +1752,14 @@ button, input[type='submit'] {
   color: #777;
 }
 
-.checkbox-template, .radio-template {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  cursor: pointer;
-  position: relative;
-}
+/*.checkbox-template, .radio-template {*/
+/*  -webkit-user-select: none;*/
+/*  -moz-user-select: none;*/
+/*  -ms-user-select: none;*/
+/*  user-select: none;*/
+/*  cursor: pointer;*/
+/*  position: relative;*/
+/*}*/
 
 .checkbox-template + label, .radio-template + label {
   margin-left: 10px;

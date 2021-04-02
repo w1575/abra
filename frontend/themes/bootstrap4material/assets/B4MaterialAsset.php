@@ -13,17 +13,15 @@ class B4MaterialAsset extends \yii\web\AssetBundle
      */
     public $js = [
         'vendor/jquery.cookie/jquery.cookie.js',
-        'vendor/popper.js/umd/popper.min.js',
-        'vendor/chart.js/Chart.min.js',
+        //'vendor/popper.js/umd/popper.min.js',
+        //'vendor/chart.js/Chart.min.js',
         'js/charts-custom.js',
         'js/front.js'
     ];
 
     public $css = [
-//        'vendor/font-awesome/css/font-awesome.min.css',
-        'css/fontastic.css',
-        'css/style.default.css',
-        'css/custom.css',
+        'dist/css/style.default.css',
+        'dist/css/custom.css',
         'vendor/font-awesome/css/font-awesome.min.css',
     ];
     /**

@@ -22,7 +22,7 @@ use yii\widgets\ActiveForm;
         ->field($model, 'portal_id')
         ->dropDownList(
             \frontend\models\portal\search\Portal::getIdAndNameListAsArrayMap(),
-            ['class' => 'select2-simple']
+            ['class' => 'select2-simple form-control']
         ) ?>
 
     <?= $form->field($model, 'date_added')->textInput() ?>

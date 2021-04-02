@@ -2,6 +2,7 @@
 
 namespace backend\assets;
 
+use common\themes\AdminLTE3\assets\ALTE3MinAsset;
 use yii\web\AssetBundle;
 
 /**
@@ -12,12 +13,11 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css',
+        'css/main.css',
     ];
     public $js = [
     ];
     public $depends = [
-        'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
+        ALTE3MinAsset::class,
     ];
 }

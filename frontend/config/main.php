@@ -8,16 +8,17 @@ $params = array_merge(
 
 return [
     'id' => 'abra-frontend',
+    'name' => 'Abra. Реестр сайтов',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language' => 'ru-RU',
     'sourceLanguage' => 'ru-US',
     'controllerNamespace' => 'frontend\controllers',
-    'layout' => '@frontend/themes/bootstrap4material/views/layouts/main',
+    'layout' => '@common/themes/AdminLTE3/views/layouts/main',
     'components' => [
         'view' => [
             'theme' => [
-                'basePath' => '@frontend/themes/bootstrap4material',
+                'basePath' => '@common/themes/AdminLTE3',
                 'baseUrl' => '@web/themes/bootstrap4material',
 //                'pathMap' => [
 //                    '@app/views' => '@app/themes/basic',

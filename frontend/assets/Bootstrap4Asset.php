@@ -11,6 +11,6 @@ class Bootstrap4Asset extends \yii\bootstrap4\BootstrapAsset
     ];
 
     public $depends = [
-        'yii\web\YiiAsset',
+        //'yii\web\YiiAsset',
     ];
 }
