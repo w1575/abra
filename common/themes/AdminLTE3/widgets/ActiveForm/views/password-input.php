@@ -1,4 +1,4 @@
-<div class="input-group mb-3 login-input-wrap">
+
     {input}
     <div class="input-group-append">
         <div class="input-group-text">
@@ -11,4 +11,3 @@
     <div class="input-helper">
         {error}
     </div>
-</div>

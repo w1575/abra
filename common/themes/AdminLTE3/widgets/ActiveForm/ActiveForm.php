@@ -9,11 +9,13 @@ use yii\widgets\ActiveForm as BaseForm;
 
 class ActiveForm extends BaseForm
 {
-
-
+    /**
+     * Инициализация
+     */
     public function init()
     {
-        $this->fieldConfig['errorCssClass'] = 'error';
+        $this->errorCssClass = 'error';
+        parent::init();
     }
 
     /**
@@ -24,6 +26,7 @@ class ActiveForm extends BaseForm
     {
         $fieldsOptions = [];
         $fieldsOptions['template'] = $this->render('login-input');
+        $fieldsOptions['options']['class'] = 'input-group mb-3 login-input-wrap';
 //        $fieldsOptions['errorCssClass'] = 'error';
         return
             $this
@@ -33,9 +36,7 @@ class ActiveForm extends BaseForm
                         'class' => 'form-control',
                         'placeholder' => $model->getAttributeLabel($attribute)
                     ]
-                )
-
-            ;
+                );
     }
 
     /**
@@ -47,7 +48,7 @@ class ActiveForm extends BaseForm
     {
         $fieldsOptions = [];
         $fieldsOptions['template'] = $this->render('password-input');
-
+        $fieldsOptions['options']['class'] = 'input-group mb-3 login-input-wrap';
         return
             $this
                 ->field($model, $attribute, $fieldsOptions)
@@ -56,8 +57,7 @@ class ActiveForm extends BaseForm
                         'class' => 'form-control',
                         'placeholder' => $model->getAttributeLabel($attribute)
                     ]
-                )
-            ;
+                );
     }
 
     /**
@@ -70,10 +70,9 @@ class ActiveForm extends BaseForm
         $fieldsOptions = [];
         $fieldsOptions['template'] = $this->render('checkbox-input');
 
-        return  $this
+        return $this
             ->field($model, $attribute, $fieldsOptions)
-            ->checkbox()
-        ;
+            ->checkbox();
 
     }
 }
