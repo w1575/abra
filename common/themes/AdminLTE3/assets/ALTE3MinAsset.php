@@ -18,7 +18,7 @@ class ALTE3MinAsset extends \yii\web\AssetBundle
         'dist/css/adminlte.min.css',
     ];
     public $js = [
-        'js/adminlte.js',
+        'dist/js/adminlte.js',
     ];
     public $depends = [
         YiiAsset::class,
