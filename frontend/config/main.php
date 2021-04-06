@@ -14,7 +14,7 @@ return [
     'language' => 'ru-RU',
     'sourceLanguage' => 'ru-US',
     'controllerNamespace' => 'frontend\controllers',
-    'layout' => '@common/themes/AdminLTE3/views/layouts/main',
+    'layout' => '@common/themes/AdminLTE3/views/layouts/content',
     'components' => [
         'view' => [
             'theme' => [

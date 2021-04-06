@@ -10,7 +10,7 @@ $minBundle =  \common\themes\AdminLTE3\assets\ALTE3MinAsset::register($this);
         <!-- Brand Logo -->
         <a href="index3.html" class="brand-link">
             <img src="<?= $minBundle->baseUrl?>/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light">AdminLTE 3</span>
+            <span class="brand-text font-weight-light">Abra</span>
         </a>
 
         <!-- Sidebar -->
@@ -48,19 +48,19 @@ $minBundle =  \common\themes\AdminLTE3\assets\ALTE3MinAsset::register($this);
 //                                'icon' => '',
                             ],
                             [
-                                'label' => '<i class="nav-icon fab fa-wordpress"></i> Сайты',
+                                'label' => '<i class="nav-icon fab fa-wordpress"></i> <p>Сайты</p>',
                                 'url' => ['/website'],
                             ],
                             [
-                                'label' => '<i class="nav-icon fas fa-briefcase"></i> Клиенты',
+                                'label' => '<i class="nav-icon fas fa-briefcase"></i> <p>Клиенты</p>',
                                 'url' => ['/server'],
                             ],
                             [
-                                'label' => '<i class="nav-icon fa fa-server"></i> Серверы',
+                                'label' => '<i class="nav-icon fas fa-server"></i> <p>Серверы</p>  ',
                                 'url' => ['/server'],
                             ],
                             [
-                                'label' => '<i class="nav-icon fa fa-signature"></i> Домены',
+                                'label' => '<i class="nav-icon fas fa-signature"></i> <p>Домены</p>',
                                 'url' => ['/server'],
                             ],
 

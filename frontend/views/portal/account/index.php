@@ -11,9 +11,18 @@ $this->title = 'Аккаунты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="account-index">
-    <p>
-        <?= Html::a('Create Account', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+
+    <div class="col-3 col-xs-12">
+        <p>
+            <?= Html::a(
+                'Добавить аккаунт',
+                ['create'],
+                ['class' => 'btn btn-outline-success btn-block btn-flat']
+            ) ?>
+        </p>
+    </div>
+
+
 
     <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

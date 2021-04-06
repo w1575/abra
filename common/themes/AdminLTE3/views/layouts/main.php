@@ -18,10 +18,19 @@
                     </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Dashboard v2</li>
-                    </ol>
+                    <?= \yii\widgets\Breadcrumbs::widget([
+                        'links' => $this->params['breadcrumbs'],
+                        'tag' => 'ol',
+                        'itemTemplate' => "<li class='breadcrumb-item'>{link}</li>\n",
+                        'activeItemTemplate' => "<li class=\"breadcrumb-item active\">{link}</li>\n",
+                        'options' => [
+                            'class' => 'breadcrumb float-sm-right',
+                        ],
+                    ]) ?>
+<!--                    <ol class="breadcrumb float-sm-right">-->
+<!--                        <li class="breadcrumb-item"><a href="#">Home</a></li>-->
+<!--                        <li class="breadcrumb-item active">Dashboard v2</li>-->
+<!--                    </ol>-->
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -31,7 +40,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-           <?= $content ?>
+                <?= $content ?>
         </div><!--/. container-fluid -->
     </section>
     <!-- /.content -->
