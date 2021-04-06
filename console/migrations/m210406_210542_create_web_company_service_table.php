@@ -21,6 +21,7 @@ class m210406_210542_create_web_company_service_table extends Migration
             'date_created' => $this->dateTime()->comment('Дата добавления'),
             'creator_id' => $this->integer()->comment('Создатель'),
             'status' => $this->tinyInteger(2)->comment('Статус [-1 - удалена, 0 - неактивна, 1- активна]')->defaultValue(1),
+            'description' => $this->string()->comment('Описание')
         ]);
 
         // creates index for column `creator_id`

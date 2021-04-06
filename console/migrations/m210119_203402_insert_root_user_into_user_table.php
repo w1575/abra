@@ -15,6 +15,7 @@ class m210119_203402_insert_root_user_into_user_table extends Migration
         $this->insert(
             '{{%user}}',
             [
+                'id' => 1,
                 'username' => 'root',
                 'auth_key' => 'iwTNae9t34OmnK6l4vT4IeaTk-YWI2Rv',
                 'password_hash' => '$2y$13$EjaPFBnZOQsHdGuHI.xvhuDp1fHpo8hKRSk6yshqa9c5EG8s3C3lO',
