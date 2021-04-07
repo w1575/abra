@@ -38,7 +38,7 @@ class CompanyServiceController extends MainController
 
             ],
             'sideBar' => [
-                'active' => 'accounts'
+                'active' => 'webCompanies'
             ],
         ];
         return $list;

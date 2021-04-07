@@ -3,7 +3,7 @@
 
 <div class="row">
     <div class="col-12">
-        <div class="card card-secondary card-outline card-tabs">
+        <div class="card card-primary card-outline card-tabs">
 
             <?php if (isset($this->params['tabs'])): ?>
                 <div class="card-header p-0 pt-1 border-bottom-0">
