@@ -3,6 +3,7 @@
 namespace frontend\models\company\web;
 
 use Yii;
+use frontend\models\User;
 
 /**
  * This is the model class for table "{{%web_company_service}}".

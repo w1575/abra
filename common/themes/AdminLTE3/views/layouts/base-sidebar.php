@@ -34,34 +34,44 @@ $minBundle =  \common\themes\AdminLTE3\assets\ALTE3MinAsset::register($this);
 
             <!-- Sidebar Menu -->
             <nav class="mt-2">
-
+                <?php $activeName = $this->params['sideBar']['active'] ?? false ?>
                 <?= \yii\bootstrap4\Nav::widget(
                     [
                         'items' => [
                             [
                                 'label' => '<i class="nav-icon fas fa-tachometer-alt"></i> <p>Главная</p>',
                                 'url' => ['/'],
+                                'active' => $activeName === false,
                             ],
                             [
                                 'label' => '<i class="nav-icon far fa-user-circle"></i> <p>Мои аккаунты</p>',
                                 'url' => ['/portal/account'],
-//                                'icon' => '',
+                                'active' => $activeName === 'accounts',
                             ],
                             [
                                 'label' => '<i class="nav-icon fab fa-wordpress"></i> <p>Сайты</p>',
                                 'url' => ['/website'],
+                                'active' => $activeName === 'websites',
                             ],
                             [
                                 'label' => '<i class="nav-icon fas fa-briefcase"></i> <p>Клиенты</p>',
                                 'url' => ['/server'],
+                                'active' => $activeName === 'clients',
                             ],
                             [
                                 'label' => '<i class="nav-icon fas fa-server"></i> <p>Серверы</p>  ',
                                 'url' => ['/server'],
+                                'active' => $activeName === 'servers',
                             ],
                             [
                                 'label' => '<i class="nav-icon fas fa-signature"></i> <p>Домены</p>',
                                 'url' => ['/server'],
+                                'active' => $activeName === 'domains',
+                            ],
+                            [
+                                'label' => '<i class="nav-icon fab fa-aws"></i> <p>Web компании</p>',
+                                'url' => ['/web/company'],
+                                'active' => $activeName === 'webCompanies',
                             ],
 
                         ],

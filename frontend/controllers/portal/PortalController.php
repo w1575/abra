@@ -2,6 +2,7 @@
 
 namespace frontend\controllers\portal;
 
+use common\components\behaviors\ViewParamsBehavior;
 use frontend\components\controllers\MainController;
 use Yii;
 use frontend\models\portal\Portal;
@@ -17,7 +18,35 @@ use yii\web\UploadedFile;
  */
 class PortalController extends MainController
 {
-    public $layout = 'portal';
+//    public $layout = 'portal';
+
+    public function behaviors()
+    {
+        $list = parent::behaviors();
+
+        $list['viewParams'] = [
+            'class' => ViewParamsBehavior::class,
+            'tabs' => [
+
+                    [
+                        'label' => 'Аккаунты',
+                        'url' => \yii\helpers\Url::to(['/portal/account']),
+                        'active' => false,
+                    ],
+                    [
+                        'label' => 'Порталы',
+                        'url' => \yii\helpers\Url::to(['/portal/portal/index']),
+                        'active' => true,
+                    ],
+
+            ],
+            'sideBar' => [
+                'active' => 'accounts'
+            ],
+        ];
+
+        return $list;
+    }
 
     /**
      * Lists all Portal models.

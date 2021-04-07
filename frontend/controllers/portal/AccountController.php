@@ -2,6 +2,7 @@
 
 namespace frontend\controllers\portal;
 
+use common\components\behaviors\ViewParamsBehavior;
 use frontend\components\controllers\MainController;
 use Yii;
 use frontend\models\portal\Account;
@@ -15,21 +16,33 @@ use yii\filters\VerbFilter;
  */
 class AccountController extends MainController
 {
-    public $layout = 'portal';
+//    public $layout = 'portal';
     /**
      * {@inheritdoc}
      */
-//    public function behaviors()
-//    {
-//        return [
-//            'verbs' => [
-//                'class' => VerbFilter::className(),
-//                'actions' => [
-//                    'delete' => ['POST'],
-//                ],
-//            ],
-//        ];
-//    }
+    public function behaviors()
+    {
+        $list = parent::behaviors();
+        $list['viewParams'] = [
+            'class' => ViewParamsBehavior::class,
+            'tabs' => [
+                [
+                    'label' => 'Аккаунты',
+                    'url' => \yii\helpers\Url::to(['/portal/account']),
+                    'active' => true,
+                ],
+                [
+                    'label' => 'Порталы',
+                    'url' => \yii\helpers\Url::to(['/portal/portal/index']),
+                    'active' => false,
+                ],
+            ],
+            'sideBar' => [
+                'active' => 'accounts'
+            ],
+        ];
+        return $list;
+    }
 
     /**
      * Lists all Account models.
