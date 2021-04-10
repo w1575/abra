@@ -22,6 +22,18 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status')->textInput() ?>
 
+    <?= $form->field($model, 'logo_path')->fileInput() ?>
+
+    <?php $preViewLink = $model->getPreviewLink('logoAttribute') ?>
+
+    <?php if ($preViewLink !== null): ?>
+
+        <div class="form-group">
+            <?= Html::img($preViewLink, []) ?>
+        </div>
+
+    <?php endif; ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

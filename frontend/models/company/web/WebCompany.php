@@ -2,10 +2,10 @@
 
 namespace frontend\models\company\web;
 
+use frontend\components\behaviors\ModelImageUploadBehavior;
 use frontend\models\queries\UserQuery;
 use Yii;
 use frontend\models\User;
-
 /**
  * This is the model class for table "{{%web_company}}".
  *
@@ -15,6 +15,7 @@ use frontend\models\User;
  * @property string|null $description Описание
  * @property int|null $creator_id Создатель
  * @property int|null $status Статус
+ * @property string|null $logo_path Логотип
  *
  * @property User $creator
  * @property WebCompanyWebCompanyService[] $webCompanyWebCompanyServices
@@ -22,6 +23,9 @@ use frontend\models\User;
  */
 class WebCompany extends \yii\db\ActiveRecord
 {
+
+    public $logoAttribute;
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +44,11 @@ class WebCompany extends \yii\db\ActiveRecord
             [['creator_id', 'status'], 'default', 'value' => null],
             [['creator_id', 'status'], 'integer'],
             [['name', 'url', 'description'], 'string', 'max' => 255],
-            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['creator_id' => 'id']],
+            [['logo_path'], 'string', 'max' => 512],
+            [
+                ['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['creator_id' => 'id']
+            ],
+            ['logoAttribute', 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg', 'bmp', 'gif'], 'maxFiles' => 10],
         ];
     }
 
@@ -56,6 +64,7 @@ class WebCompany extends \yii\db\ActiveRecord
             'description' => 'Описание',
             'creator_id' => 'Создатель',
             'status' => 'Статус',
+            'logo_path' => 'Логотип',
         ];
     }
 
@@ -96,5 +105,24 @@ class WebCompany extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \frontend\models\company\web\queries\WebCompanyQuery(get_called_class());
+    }
+
+    /**
+     * Подключенные поведения
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            'uploadImages' => [
+                'class' => ModelImageUploadBehavior::class,
+
+                'attributesSettings' => [
+                    'logoAttribute' => [
+                        'dbAttribute' => 'logo_path',
+                    ],
+                ],
+            ],
+        ];
     }
 }
