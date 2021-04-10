@@ -22,6 +22,7 @@ class m210406_213243_create_web_company_table extends Migration
             'description' => $this->string(255)->comment('Описание'),
             'creator_id' => $this->integer()->comment('Создатель'),
             'status' => $this->tinyInteger(2)->comment('Статус')->defaultValue(1),
+            'logo_path' => $this->string(512)->comment('Логотип'),
         ]);
 
         // creates index for column `creator_id`
