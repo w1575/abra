@@ -54,24 +54,31 @@ class SettingsCollecotor extends \yii\base\Component
         'prefixLength',
         'folder',
     ];
-
+    /**
+     * @var array подготовленные настройки для каждого атрибута файлов
+     */
+    private $preparedSettings;
+    /**
+     * @var array названия атрибутов с файлами
+     */
+    private $fileAttributeNames = [];
     /**
      * @param $uploader
      */
     public function setUploader($uploader)
     {
         $this->uploader = $uploader;
-        $this->prepareSettings();
     }
 
     /**
      * Подготавливает все виды настройки поведения
      */
-    private function prepareSettings()
+    public function prepareSettings()
     {
         $this->prepareGlobalSettings();
         $this->prepareBehaviorSettings();
         $this->prepareAttributesSettings();
+        $this->buildSettings();
     }
 
     /**
@@ -153,28 +160,72 @@ class SettingsCollecotor extends \yii\base\Component
         }
 
         foreach ($params as $fileAttribute => $attributeParams) {
+            // берем настройки для каждого атрибута
+            $this->fileAttributeNames[] = $fileAttribute;
             foreach ($this->settingNames as $index => $settingName) {
-                $actualValue= $attributeParams[$settingName]
-                    ?? (
-                        $this->behaviorSettings[$settingName]
-                        ?? $this->globalSettings[$settingName]
-                    )
-                ;
-
-                if ($actualValue === null) {
-                    throw new Exception("Параметр {$settingName} не может быть равен NULL");
-                }
-                $this->attributeParams[$fileAttribute][$settingName] = $actualValue;
+                $this->attributeParams[$fileAttribute][$settingName] = $attributeParams[$settingName];
             }
         }
+    }
 
+    /**
+     * Создает массив с настройками для каждого атрибуты
+     */
+    public function buildSettings()
+    {
+        foreach ($this->fileAttributeNames as $index => $fileAttributeName) {
+            $this->buildWebPath($fileAttributeName);
+            $this->buildFolderPath($fileAttributeName);
+            $this->buildNamePrefixLength($fileAttributeName);
+            $this->buildReplaceDuplicate($fileAttributeName);
+            $this->buildDeleteOnChange($fileAttributeName);
+            $this->buildPeviewSettings($fileAttributeName);
+        }
+    }
 
+    /**
+     * @param $fileAttributeName
+     */
+    private function buildWebPath($fileAttributeName)
+    {
+        $this->preparedSettings['fileAttributeName'] =
+            $this->attributeParams['webPath']
+            ?? $this->behaviorSettings['webPath']
+            ?? $this->globalSettings['webPath']
+        ;
+    }
+
+    private function buildFolderPath($fileAttributeName)
+    {
+        $fullPath = '';
+        if ($this->attributeParams['folderPath'][0] === '/') {
+            $fullPath = $this
+        }
+    }
+
+    private function buildNamePrefixLength($fileAttributeName)
+    {
+
+    }
+
+    private function buildReplaceDuplicate($fileAttributeName)
+    {
+
+    }
+
+    private function buildDeleteOnChange($fileAttributeName)
+    {
+
+    }
+
+    private function buildPeviewSettings($fileAttributeName)
+    {
 
     }
 
     public function setAttributesSettings()
     {
-
+        $this->uploader->setAttributeSettings($this->preparedSettings);
     }
 
 
