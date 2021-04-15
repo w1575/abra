@@ -1,7 +1,7 @@
 <?php
 
 
-namespace common\components\behaviors\ImageUploaderBehavior;
+namespace common\components\behaviors\ImageUploaderBehavior_;
 
 use Faker\Factory;
 
@@ -117,8 +117,11 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     {
         parent::init();
         $collector = SettingCollectorFactory::build($this);
-        $collector->setAttributesSettings();
+        $collector->setAttributeSettings();
         unset($collector);
+        $settings = $this->attributeSettings;
+
+        die();
     }
 
 }

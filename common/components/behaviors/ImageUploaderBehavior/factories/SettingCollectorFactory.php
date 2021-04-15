@@ -1,10 +1,11 @@
 <?php
 
 
-namespace common\components\behaviors\ImageUploaderBehavior;
+namespace common\components\behaviors\ImageUploaderBehavior\factories;
 
 
-use yii\base\BaseObject;
+use common\components\behaviors\ImageUploaderBehavior\SettingsCollecotor;
+
 
 final class SettingCollectorFactory
 {

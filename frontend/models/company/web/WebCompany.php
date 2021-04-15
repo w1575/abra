@@ -2,6 +2,7 @@
 
 namespace frontend\models\company\web;
 
+use common\components\behaviors\ImageUploaderBehavior\ImageUploaderBehavior;
 use frontend\components\behaviors\ModelImageUploadBehavior;
 use frontend\models\queries\UserQuery;
 use Yii;
@@ -115,9 +116,9 @@ class WebCompany extends \yii\db\ActiveRecord
     {
         return [
             'uploadImages' => [
-                'class' => ModelImageUploadBehavior::class,
+                'class' => ImageUploaderBehavior::class,
 
-                'attributesSettings' => [
+                'attributeSettings' => [
                     'logoAttribute' => [
                         'dbAttribute' => 'logo_path',
                     ],
