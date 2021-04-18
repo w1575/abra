@@ -5,7 +5,6 @@ namespace common\components\behaviors\ImageUploaderBehavior;
 
 use Yii;
 use yii\db\Exception;
-use function GuzzleHttp\Psr7\uri_for;
 
 /**
  * Class SettingsCollecotor если честно я не знаю что и зачем я делаю :D
@@ -21,6 +20,7 @@ class SettingsCollecotor extends \yii\base\Component
     public const NAME_PREFIX_SETTING_NAME = 'namePrefixLength';
     public const REPLACE_DUPLICATE_SETTING_NAME = 'replaceDuplicate';
     public const DELETE_ON_CHANGE_SETTING_NAME = 'deleteOnChange';
+    public const DB_ATTRIBUTE_NAME = 'dbAttribute';
 
     public const PREVIEW_SETTING_WIDTH_NAME = 'width';
     public const PREVIEW_SETTING_HEIGHT_NAME = 'height';
@@ -88,7 +88,7 @@ class SettingsCollecotor extends \yii\base\Component
     }
 
     /**
-     *
+     * Небольшая инициализация
      */
     public function init()
     {
@@ -192,9 +192,10 @@ class SettingsCollecotor extends \yii\base\Component
     /**
      * Получение индивидуальных настроек атрибутов
      */
-    private function prepareAttributesParams()
+    private function prepareAttributeSettings()
     {
-        $params = $this->owner->attributeSettings;
+        $uploader = $this->uploader;
+        $params = $uploader->getAttributeSettings();
         if (!is_array($params)) {
             throw new \Exception('Параметр attributeSettings должен быть массивом.');
         }
@@ -203,7 +204,7 @@ class SettingsCollecotor extends \yii\base\Component
             // берем настройки для каждого атрибута
             $this->fileAttributeNames[] = $fileAttribute;
             foreach ($this->settingNames as $index => $settingName) {
-                $this->attributeSettings[$fileAttribute][$settingName] = $attributeParams[$settingName];
+                $this->attributeSettings[$fileAttribute][$settingName] = $attributeParams[$settingName] ?? [];
             }
         }
     }
@@ -219,7 +220,7 @@ class SettingsCollecotor extends \yii\base\Component
             $this->buildNamePrefixLength($fileAttributeName);
             $this->buildReplaceDuplicate($fileAttributeName);
             $this->buildDeleteOnChange($fileAttributeName);
-            $this->buildPeviewSettings($fileAttributeName);
+            $this->buildPreviewSettings($fileAttributeName);
         }
     }
 
@@ -244,7 +245,7 @@ class SettingsCollecotor extends \yii\base\Component
             }
         }
         // TODO: DRY тут и не пахнет
-        if (isset($this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME])) {
+        if (!empty($this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME])) {
             if (
                 $this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME][0] === '@'
                 or $this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME][0] === DIRECTORY_SEPARATOR
@@ -263,7 +264,7 @@ class SettingsCollecotor extends \yii\base\Component
             throw new Exception("Для атрибута {$fileAttributeName} не указан параметр folderPath");
         }
 
-        if (!($path[0] !== '/' and $path[0] !== '@')) {
+        if (($path[0] !== '/' and $path[0] !== '@')) {
             throw new \Exception("{$fileAttributeName}: параметр folderPath должен начинаться с '@' или '/'");
         }
 
@@ -291,7 +292,7 @@ class SettingsCollecotor extends \yii\base\Component
             }
         }
         // TODO: DRY тут и не пахнет
-        if (isset($this->attributeSettings[$fileAttributeName][$webPathName])) {
+        if (!empty($this->attributeSettings[$fileAttributeName][$webPathName])) {
             if ($this->attributeSettings[$fileAttributeName][$webPathName][0] === DIRECTORY_SEPARATOR) {
                 $path = $this->attributeSettings[$fileAttributeName][$webPathName];
             } else {

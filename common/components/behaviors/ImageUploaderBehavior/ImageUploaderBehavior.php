@@ -5,6 +5,8 @@ namespace common\components\behaviors\ImageUploaderBehavior;
 
 use common\components\behaviors\ImageUploaderBehavior\factories\SettingCollectorFactory;
 use Faker\Factory;
+use yii\base\Model;
+use yii\db\ActiveRecord;
 
 /**
  * Class ImageUploaderBehavior позволяет загружать файлы на сервер и записывать путь в колонку
@@ -37,7 +39,7 @@ class ImageUploaderBehavior extends \yii\base\Behavior
      * 'params' => [
      *      // ... другие параметры приложения
      *      'imageUploadBehavior' => [
-     *          'folderPath' => '/var/www/site.name/web/uploads
+     *          'folderPath' => '@frontend/web/uploads
      *      ]
      * ]
      * Подключение приложения
@@ -112,19 +114,33 @@ class ImageUploaderBehavior extends \yii\base\Behavior
         $this->attributeSettings = $values;
     }
 
+    public function getAttributeSettings()
+    {
+        return $this->attributeSettings;
+    }
+
+//    public function events()
+//    {
+////        return [
+////            ActiveRecord::EVENT_ => 'initParams'
+////        ];
+//    }
+
     /**
      * Инициализация поведения
      */
     public function init()
     {
-        parent::init();
         $collector = SettingCollectorFactory::build($this);
+        $collector->prepareSettings();
         $collector->buildSettings();
         $this->attributeSettings = $collector->preparedSettings;
         $settings = $this->attributeSettings;
 //        unset($collector);
 
     }
+
+
 
     public function getPreviewLink()
     {

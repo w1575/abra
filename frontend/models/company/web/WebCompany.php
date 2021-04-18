@@ -120,7 +120,7 @@ class WebCompany extends \yii\db\ActiveRecord
 
                 'attributeSettings' => [
                     'logoAttribute' => [
-                        'dbAttribute' => 'logo_path',
+//                        'dbAttribute' => 'logo_path',
                     ],
                 ],
             ],
