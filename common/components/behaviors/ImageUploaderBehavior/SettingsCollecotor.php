@@ -3,6 +3,7 @@
 
 namespace common\components\behaviors\ImageUploaderBehavior;
 
+use common\components\behaviors\ImageUploaderBehavior\factories\SettingsBuilderFactory;
 use common\components\behaviors\ImageUploaderBehavior\factories\SettingsModelFactory;
 use common\components\behaviors\ImageUploaderBehavior\model\SettingsModel;
 use Yii;
@@ -218,6 +219,10 @@ class SettingsCollecotor extends \yii\base\Component
     {
         $globalSettings = SettingsModelFactory::build($this->globalSettings);
         $behaviorSettings = SettingsModelFactory::build($this->behaviorSettings);
+
+        $commonSettings = SettingsBuilderFactory::build($globalSettings->attributes, $behaviorSettings->attributes);
+
+
 
     }
 
