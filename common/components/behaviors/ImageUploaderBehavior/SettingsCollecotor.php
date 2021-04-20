@@ -3,6 +3,8 @@
 
 namespace common\components\behaviors\ImageUploaderBehavior;
 
+use common\components\behaviors\ImageUploaderBehavior\factories\SettingsModelFactory;
+use common\components\behaviors\ImageUploaderBehavior\model\SettingsModel;
 use Yii;
 use yii\db\Exception;
 
@@ -212,177 +214,21 @@ class SettingsCollecotor extends \yii\base\Component
     /**
      * @throws Exception
      */
+    public function validateSettings()
+    {
+        $globalSettings = SettingsModelFactory::build($this->globalSettings);
+        $behaviorSettings = SettingsModelFactory::build($this->behaviorSettings);
+
+    }
+
+    /**
+     * @throws Exception
+     */
     public function buildSettings()
     {
-        foreach ($this->fileAttributeNames as $index => $fileAttributeName) {
-            $this->buildWebPath($fileAttributeName);
-            $this->buildFolderPath($fileAttributeName);
-            $this->buildNamePrefixLength($fileAttributeName);
-            $this->buildReplaceDuplicate($fileAttributeName);
-            $this->buildDeleteOnChange($fileAttributeName);
-            $this->buildPreviewSettings($fileAttributeName);
-        }
     }
 
-    /**
-     * @param $fileAttributeName
-     * @throws Exception
-     */
-    private function buildFolderPath($fileAttributeName)
-    {
-        $path = $this->globalSettings[static::FOLDER_PATH_SETTING_NAME] ?? '';
-        // TODO: очень длинные названия получаются пока что нет времени это переделывать :(
 
-        if (isset($this->behaviorSettings[static::FOLDER_PATH_SETTING_NAME])) {
-            if ($this->behaviorSettings[static::FOLDER_PATH_SETTING_NAME][0] === '@' or $this->behaviorSettings['path'][0] === DIRECTORY_SEPARATOR) {
-                $path = $this->behaviorSettings[static::FOLDER_PATH_SETTING_NAME];
-            } else {
-                if (!empty($path)) {
-                    $path .= DIRECTORY_SEPARATOR . $this->behaviorSettings[static::FOLDER_PATH_SETTING_NAME];
-                } else {
-                    $path = $this->behaviorSettings[static::FOLDER_PATH_SETTING_NAME];
-                }
-            }
-        }
-        // TODO: DRY тут и не пахнет
-        if (!empty($this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME])) {
-            if (
-                $this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME][0] === '@'
-                or $this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME][0] === DIRECTORY_SEPARATOR
-            ) {
-                $path = $this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME];
-            } else {
-                if (!empty($path)) {
-                    $path .= DIRECTORY_SEPARATOR . $this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME];
-                } else {
-                    $path = $this->attributeSettings[$fileAttributeName][static::FOLDER_PATH_SETTING_NAME];
-                }
-            }
-        }
-
-        if (empty($path)) {
-            throw new Exception("Для атрибута {$fileAttributeName} не указан параметр folderPath");
-        }
-
-        if (($path[0] !== '/' and $path[0] !== '@')) {
-            throw new \Exception("{$fileAttributeName}: параметр folderPath должен начинаться с '@' или '/'");
-        }
-
-    }
-
-    /**
-     * @param $fileAttributeName
-     * @throws Exception
-     */
-    private function buildWebPath($fileAttributeName)
-    {
-        // TODO: нужно доработать эту копипасту метода выше
-        $webPathName = static::WEB_PATH_SETTING_NAME;
-        $path = $this->globalSettings[$webPathName] ?? '';
-
-        if (isset($this->behaviorSettings[$webPathName])) {
-            if ($this->behaviorSettings[$webPathName][0] === DIRECTORY_SEPARATOR) {
-                $path = $this->behaviorSettings[$webPathName];
-            } else {
-                if (!empty($path)) {
-                    $path .= "/{$this->behaviorSettings[$webPathName]}";
-                } else {
-                    $path = $this->behaviorSettings[$webPathName];
-                }
-            }
-        }
-        // TODO: DRY тут и не пахнет
-        if (!empty($this->attributeSettings[$fileAttributeName][$webPathName])) {
-            if ($this->attributeSettings[$fileAttributeName][$webPathName][0] === DIRECTORY_SEPARATOR) {
-                $path = $this->attributeSettings[$fileAttributeName][$webPathName];
-            } else {
-                if (!empty($path)) {
-                    $path .= "/{$this->attributeSettings[$fileAttributeName][$webPathName]}";
-                } else {
-                    $path = $this->attributeSettings[$fileAttributeName][$fileAttributeName];
-                }
-            }
-        }
-
-        if (empty($path)) {
-            throw new Exception("Для атрибута {$fileAttributeName} не указан параметр webPath");
-        }
-
-        if ($path[0] !== '/') {
-            throw new \Exception("{$fileAttributeName}: параметр webPath должен начинаться с '/'");
-        }
-
-        $this->preparedSettings[$fileAttributeName]['webPath'] = $path;
-
-    }
-
-    /**
-     * @param $fileAttributeName
-     */
-    private function buildNamePrefixLength($fileAttributeName)
-    {
-        $this->preparedSettings[$fileAttributeName]['namePrefixLength'] =
-            $this->attributeSettings[$fileAttributeName]['namePrefixLength']
-            ?? $this->behaviorSettings['namePrefixLength']
-            ?? $this->globalSettings['namePrefixLength']
-            ?? 0
-        ;
-    }
-
-    /**
-     * @param $fileAttributeName
-     */
-    private function buildReplaceDuplicate($fileAttributeName)
-    {
-        $name = static::REPLACE_DUPLICATE_SETTING_NAME;
-        $this->preparedSettings[$fileAttributeName][$name] =
-            $this->attributeSettings[$fileAttributeName][$name]
-            ?? $this->behaviorSettings[$name]
-            ?? $this->globalSettings[$name]
-            ?? false
-        ;
-    }
-
-    /**
-     * @param $fileAttributeName
-     */
-    private function buildDeleteOnChange($fileAttributeName)
-    {
-        $name = static::DELETE_ON_CHANGE_SETTING_NAME;
-        $this->preparedSettings[$fileAttributeName][$name] =
-            $this->attributeSettings[$fileAttributeName][$name]
-            ?? $this->behaviorSettings[$name]
-            ?? $this->globalSettings[$name]
-            ?? true
-        ;
-    }
-
-    /**
-     * @param $fileAttributeName
-     */
-    private function buildPreviewSettings($fileAttributeName)
-    {
-        if ($this->attributeSettings[$fileAttributeName][static::PREVIEW_SETTING_NAME] === false) {
-            $this->preparedSettings[$fileAttributeName][static::PREVIEW_SETTING_NAME] = false;
-        }
-
-        foreach ($this->previewSettingNames as $index => $previewSettingName) {
-            $value =
-                $this->attributeSettings[$fileAttributeName][static::PREVIEW_SETTING_NAME][$previewSettingName]
-                ?? $this->behaviorSettings[static::PREVIEW_SETTING_NAME][$previewSettingName]
-                ?? $this->globalSettings[static::PREVIEW_SETTING_NAME][$previewSettingName]
-                ?? null
-            ;
-
-            if ($value === null and $previewSettingName !== static::PREVIEW_SETTING_FOLDER_NAME) {
-                // ибо подпапки для превьюшек может и не быть, а вот остальные параметры должны быть указаны
-                throw new \Exception("Параметр {$previewSettingName} для атрибута {$fileAttributeName} пуст.");
-            }
-
-            $this->preparedSettings[$fileAttributeName][static::PREVIEW_SETTING_NAME][$previewSettingName] = $value;
-
-        }
-    }
 
     /**
      *

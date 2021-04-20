@@ -6,7 +6,7 @@ namespace common\components\behaviors\ImageUploaderBehavior\model;
 
 use common\components\behaviors\ImageUploaderBehavior\SettingsCollecotor;
 
-class SettingModel extends \yii\base\Model
+class SettingsModel extends \yii\base\Model
 {
     /**
      * Отдельный сценарий, т.к. у нас непосредственно в настройках атриубтуов должен
@@ -43,7 +43,6 @@ class SettingModel extends \yii\base\Model
         switch ($this->scenario) {
             case static::SCENARIO_FINAL:
                 return $this->getFinalRules();
-
             default:
                 return $this->getDefultRules();
         }
@@ -97,21 +96,26 @@ class SettingModel extends \yii\base\Model
     {
         return [
             [
-                SettingsCollecotor::PREVIEW_SETTING_NAME,
-                'isArrayValidator',
-                'skipOnEmpty' => false,
-            ],
-            [
                 SettingsCollecotor::WEB_PATH_SETTING_NAME,
                 'string',
                 'max' => 512,
                 'skipOnEmpty' => false
             ],
             [
+                SettingsCollecotor::WEB_PATH_SETTING_NAME,
+                'firstSymbolIsSlashValidator',
+                'skipOnError' => true,
+            ],
+            [
                 SettingsCollecotor::FOLDER_PATH_SETTING_NAME,
                 'string',
                 'max' => 1024,
                 'skipOnEmpty' => false,
+            ],
+            [
+                SettingsCollecotor::FOLDER_PATH_SETTING_NAME,
+                'firstSymbolIsSlashOrAtValidator',
+                'skipOnEmpty' => true,
             ],
             [
                 SettingsCollecotor::NAME_PREFIX_SETTING_NAME,
@@ -126,7 +130,13 @@ class SettingModel extends \yii\base\Model
                     SettingsCollecotor::DELETE_ON_CHANGE_SETTING_NAME,
                     SettingsCollecotor::REPLACE_DUPLICATE_SETTING_NAME
                 ],
-                'boolean'
+                'boolean',
+                'skipOnEmpty' => false,
+            ],
+            [
+                SettingsCollecotor::PREVIEW_SETTING_NAME,
+                'previewParamsValidator',
+                'skipOnError' => true,
             ],
         ];
     }
@@ -146,9 +156,63 @@ class SettingModel extends \yii\base\Model
                 $this->addError($attribute,"{$attribute} не является массивом");
             }
         }
-
-
     }
 
+    /**
+     * Проверяет является ли первый символ пути, по которому сохраняется директория / или @
+     * @param $attribute
+     * @param $params
+     */
+    public function firstSymbolIsSlashOrAtValidator($attribute, $params)
+    {
+        if (!($this->hasErrors() and $params['skipOnError'] === true)) {
+            $value = $this->{$attribute};
+            if ($value[0] !== '@' and $value[0] !== '/') {
+                $this->addError(
+                    $attribute,
+                    'Первый символ должен начинаться с @ или /'
+                );
+            }
+        }
+    }
+
+    /**
+     * Проверяет является ли первый символ пути, по которому сохраняется директория / или @
+     * @param $attribute
+     * @param $params
+     */
+    public function firstSymbolIsSlashValidator($attribute, $params)
+    {
+        if (!($this->hasErrors() and $params['skipOnError'] === true)) {
+            $value = $this->{$attribute};
+            if ($value[0] !== '/') {
+                $this->addError(
+                    $attribute,
+                    'Первый символ должен начинаться с @ или /'
+                );
+            }
+        }
+    }
+
+    /**
+     * Проверяет настройки для превьюшек изоабражений
+     * @param $attribute
+     * @param $params
+     */
+    public function previewParamsValidator($attribute, $params)
+    {
+        if (!($this->hasErrors() and !$params['skipOnError'])) {
+            $values = $this->{$attribute};
+            if (!empty($values)) {
+                $model = new PreviewSettingsModel($values);
+                if (!$model->validate()) {
+                    foreach ($model->errors as $previewAttribute => $error) {
+                        $this->addError($previewAttribute, $error);
+                    }
+                }
+            }
+            // может быть пустым, в таком случае просто превьюшка не будет генерироваться
+        }
+    }
 
 }
