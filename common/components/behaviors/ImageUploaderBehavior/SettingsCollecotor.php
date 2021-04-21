@@ -3,9 +3,11 @@
 
 namespace common\components\behaviors\ImageUploaderBehavior;
 
+use common\components\behaviors\ImageUploaderBehavior\factories\BehaviorSettingsCollectorFactory;
+use common\components\behaviors\ImageUploaderBehavior\factories\GlobalSettingsCollectorFactory;
 use common\components\behaviors\ImageUploaderBehavior\factories\SettingsBuilderFactory;
 use common\components\behaviors\ImageUploaderBehavior\factories\SettingsModelFactory;
-use common\components\behaviors\ImageUploaderBehavior\model\SettingsModel;
+use common\components\behaviors\ImageUploaderBehavior\models\SettingsModel;
 use Yii;
 use yii\db\Exception;
 
@@ -56,7 +58,7 @@ class SettingsCollecotor extends \yii\base\Component
      * Список параметров
      * @var string[]
      */
-    private $settingNames = [
+    public $settingNames = [
         //'webPath',
         //'folderPath',
         //'namePrefixLength',
@@ -67,7 +69,7 @@ class SettingsCollecotor extends \yii\base\Component
     /**
      * @var string[]
      */
-    private $previewSettingNames = [
+    public $previewSettingNames = [
 //        'width',
 //        'height',
 //        'quality',
@@ -114,136 +116,46 @@ class SettingsCollecotor extends \yii\base\Component
     }
 
     /**
-     * Подготавливает все виды настройки поведения
+     * Собирает глобальные настройки и настройки поведения конкретной модели
      */
-    public function prepareSettings()
+    public function prepareCommonSettings()
     {
-        $this->prepareGlobalSettings();
-        $this->prepareBehaviorSettings();
-        $this->prepareAttributeSettings();
-        $this->buildSettings();
+        $globalSettingsCollector = GlobalSettingsCollectorFactory::build();
+        $this->globalSettings = $globalSettingsCollector->getSettings();
+        unset($globalSettingsCollector);
+
+        $behaviorSettingsCollector = BehaviorSettingsCollectorFactory::build($this->uploader);
+        $this->behaviorSettings = $behaviorSettingsCollector->getSettings();
+        unset($behaviorSettingsCollector);
+
+        // TODO теперь нужно сделать сборку этих настроек
     }
 
     /**
-     * Подготавливает настройки для генерации превьюшек
-     * @param $settings
-     * @return array|false|null
      * @throws \Exception
      */
-    private function preparePreviewSettings($settings)
+    public function validateCommonSettings()
     {
-        switch (gettype($settings)) {
-            case 'NULL':
-                return null;
-            case 'boolean':
-                if ($settings === false) {
-                    return false;
-                }
-                throw new \Exception('Параметр ' . static::PREVIEW_SETTING_NAME .' не может иметь значение true');
-            case 'array':
-                $result = [];
-                foreach ($this->previewSettingNames as $index => $previewSettingName) {
-                    $result[$previewSettingName] = $settings[$previewSettingName] ?? null;
-                }
-                return $result;
-            default:
-                throw new \Exception('Параметр ' . static::PREVIEW_SETTING_NAME  . ' имеет неверный формат.');
-        }
+        $this->validateSettings($this->globalSettings);
+        $this->validateSettings($this->behaviorSettings);
     }
 
     /**
-     * Подготовка настроек, указанных в параметре приложения
+     * @param $parmas
      * @throws \Exception
      */
-    private function prepareGlobalSettings()
+    protected function validateSettings($parmas)
     {
-        $globalSettings = Yii::$app->params['imageUploaderBehavior'] ?? [];
-        if (!empty($globalSettings)) {
-            foreach ($this->settingNames as $index => $settingName) {
-                $this->globalSettings[$settingName] = $globalSettings[$settingName] ?? null;
-            }
-            try {
-                $this->globalSettings[static::PREVIEW_SETTING_NAME] = $this->preparePreviewSettings($this->globalSettings[static::PREVIEW_SETTING_NAME]);
-            } catch (\Exception $e) {
-                throw new \Exception("При проверке глобальных параметров произошла ошибка: {$e->getMessage()}");
-            }
-
+        $model = new SettingsModel;
+        $model->load($parmas);
+        if ($model->validate() === false) {
+            $errorsInline = implode(PHP_EOL, $model->errors);
+            throw new \Exception("При проверке настроек произошла ошибка: {$errorsInline}" );
         }
     }
 
-    /**
-     * Получение параметров
-     * @throws \Exception при неправильной настройки параметров превьюшки
-     */
-    private function prepareBehaviorSettings()
+    public function buildCommonAttributes()
     {
-        $this->behaviorSettings = [];
-        foreach ($this->settingNames as $index => $settingName) {
-            $this->behaviorSettings[$settingName] = $this->uploader->{$settingName};
-        }
-
-        try {
-            $this->behaviorSettings[static::PREVIEW_SETTING_NAME]
-                = $this->preparePreviewSettings($this->behaviorSettings)
-            ;
-        } catch (\Exception $e) {
-            throw new \Exception("При проверке параметров поведения произошла ошибка: {$e->getMessage()}");
-        }
-
+        $builer = SettingsBuilderFactory::build($this->behaviorSettings, $this->globalSettings);
     }
-
-    /**
-     * Получение индивидуальных настроек атрибутов
-     */
-    private function prepareAttributeSettings()
-    {
-        $uploader = $this->uploader;
-        $params = $uploader->getAttributeSettings();
-        if (!is_array($params)) {
-            throw new \Exception('Параметр attributeSettings должен быть массивом.');
-        }
-
-        foreach ($params as $fileAttribute => $attributeParams) {
-            // берем настройки для каждого атрибута
-            $this->fileAttributeNames[] = $fileAttribute;
-            foreach ($this->settingNames as $index => $settingName) {
-                $this->attributeSettings[$fileAttribute][$settingName] = $attributeParams[$settingName] ?? [];
-            }
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function validateSettings()
-    {
-        $globalSettings = SettingsModelFactory::build($this->globalSettings);
-        $behaviorSettings = SettingsModelFactory::build($this->behaviorSettings);
-
-        $commonSettings = SettingsBuilderFactory::build($globalSettings->attributes, $behaviorSettings->attributes);
-
-
-
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function buildSettings()
-    {
-    }
-
-
-
-    /**
-     *
-     */
-    public function setAttributeSettings()
-    {
-        $this->uploader->setAttributeSettings($this->preparedSettings);
-    }
-
-
-
-
 }

@@ -16,10 +16,7 @@ final class SettingsModelFactory
      */
     public static function build($params)
     {
-        $model = new SettingsModel($params);
-        if ($model->validate() === false) {
-            throw new Exception('При валидации глобальных настроек произошла ошибка', $model->errors);
-        }
+        $model = new SettingsModel();
 
         return $model;
     }

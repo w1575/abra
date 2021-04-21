@@ -9,15 +9,16 @@ use common\components\behaviors\ImageUploaderBehavior\settingBuilders\SettingsBu
 class SettingsBuilderFactory
 {
     /**
-     * @param $majorSettings array|null
-     * @param $minorSettings array|null
+     * @param $majorSettings
+     * @param $minorSettings
      * @return SettingsBuilder
      */
-    public static function build($majorSettings, $minorSettings)
+    public static function build($majorSettings, $minorSettings, $uploader)
     {
         $model = new SettingsBuilder();
         $model->majorSettings = $majorSettings;
         $model->minorSettings = $minorSettings;
+        $model->uploader = $uploader;
 
         return $model;
     }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace common\components\behaviors\ImageUploaderBehavior\model;
+namespace common\components\behaviors\ImageUploaderBehavior\models;
 
 
 class PreviewSettingsModel extends \yii\base\Model

@@ -132,8 +132,9 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     public function init()
     {
         $collector = SettingCollectorFactory::build($this);
-        $collector->prepareSettings();
-        $collector->buildSettings();
+        $collector->prepareCommonSettings();
+        $collector->validateCommonSettings();
+        $collector->buildCommonAttributes();
         $this->attributeSettings = $collector->preparedSettings;
         $settings = $this->attributeSettings;
 //        unset($collector);

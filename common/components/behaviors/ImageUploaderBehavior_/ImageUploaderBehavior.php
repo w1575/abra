@@ -3,6 +3,7 @@
 
 namespace common\components\behaviors\ImageUploaderBehavior_;
 
+use common\components\behaviors\ImageUploaderBehavior\factories\SettingCollectorFactory;
 use Faker\Factory;
 
 /**
@@ -117,8 +118,8 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     {
         parent::init();
         $collector = SettingCollectorFactory::build($this);
-        $collector->setAttributeSettings();
-        unset($collector);
+        $collector->prepareCommonSettings();
+
         $settings = $this->attributeSettings;
 
         die();

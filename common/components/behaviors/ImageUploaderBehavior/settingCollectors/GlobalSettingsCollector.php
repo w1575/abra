@@ -1,7 +1,7 @@
 <?php
 
 
-namespace common\components\behaviors\ImageUploaderBehavior\settingCollector;
+namespace common\components\behaviors\ImageUploaderBehavior\settingCollectors;
 
 
 use common\components\behaviors\ImageUploaderBehavior\SettingsCollecotor;
@@ -12,7 +12,7 @@ use Yii;
  * из \yii::$app->params[]. Они работают все на
  * @package common\components\behaviors\ImageUploaderBehavior\settingCollector
  */
-class GlobalSettingCollector extends AbstractSettingsCollector implements SettingsCollectorInterface
+class GlobalSettingsCollector extends AbstractSettingsCollector implements SettingsCollectorInterface
 {
     private const CONFIG_PARAMS_NAME = "imageUploaderBehavior";
     /**
@@ -100,9 +100,11 @@ class GlobalSettingCollector extends AbstractSettingsCollector implements Settin
     /**
      * @param $name
      */
-    private function setSettingsByPropertyName($name)
+    public function setSettingsByPropertyName($name)
     {
-        $this->preparedSettings[$name] = $this->receivedSettings[$name] ?? false;
+        if (isset($this->receivedSettings[$name])) {
+            $this->preparedSettings[$name]  = $this->receivedSettings[$name];
+        }
     }
 
 

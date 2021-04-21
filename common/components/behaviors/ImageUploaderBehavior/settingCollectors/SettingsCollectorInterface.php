@@ -1,6 +1,6 @@
 <?php
 
-namespace common\components\behaviors\ImageUploaderBehavior\settingCollector;
+namespace common\components\behaviors\ImageUploaderBehavior\settingCollectors;
 
 use \Exception;
 
@@ -51,4 +51,5 @@ interface SettingsCollectorInterface
      * Подготавливает настройки для генерируемых превьюшек изображений
      */
     public function preparePreviewSettings();
+
 }

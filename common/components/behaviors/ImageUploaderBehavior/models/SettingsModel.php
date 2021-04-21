@@ -1,7 +1,7 @@
 <?php
 
 
-namespace common\components\behaviors\ImageUploaderBehavior\model;
+namespace common\components\behaviors\ImageUploaderBehavior\models;
 
 
 use common\components\behaviors\ImageUploaderBehavior\SettingsCollecotor;
@@ -18,22 +18,34 @@ class SettingsModel extends \yii\base\Model
      * Итоговая валидация собранных настроек для каждого атрибута
      */
     public const SCENARIO_FINAL = 'finalValidate';
-
     /**
-     * @return array
+     * @var
      */
-    public function attributes()
-    {
-        return [
-            SettingsCollecotor::PREVIEW_SETTING_NAME,
-            SettingsCollecotor::WEB_PATH_SETTING_NAME,
-            SettingsCollecotor::FOLDER_PATH_SETTING_NAME,
-            SettingsCollecotor::NAME_PREFIX_SETTING_NAME,
-            SettingsCollecotor::REPLACE_DUPLICATE_SETTING_NAME,
-            SettingsCollecotor::DELETE_ON_CHANGE_SETTING_NAME,
-        ];
-    }
-
+    public $previewSettings;
+    /**
+     * @var
+     */
+    public $webPath;
+    /**
+     * @var
+     */
+    public $folderPath;
+    /**
+     * @var
+     */
+    public $namePrefixLength;
+    /**
+     * @var
+     */
+    public $replaceDuplicate;
+    /**
+     * @var
+     */
+    public $deleteOnChange;
+    /**
+     * @var
+     */
+    public $dbAttribute;
 
     /**
      * @return array
