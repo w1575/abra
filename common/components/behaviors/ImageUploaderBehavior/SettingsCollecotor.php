@@ -51,6 +51,10 @@ class SettingsCollecotor extends \yii\base\Component
      */
     private $behaviorSettings;
     /**
+     * @var array подготовленные праметры для поведения на основе настроек поведений и настроек в конфиге приложения
+     */
+    private $commonSettings;
+    /**
      * @var array параметры, которые указаны в настройках атрибутов
      */
     private $attributeSettings= [];
@@ -148,14 +152,47 @@ class SettingsCollecotor extends \yii\base\Component
     {
         $model = new SettingsModel;
         $model->load($parmas);
-        if ($model->validate() === false) {
+        if ($model->hasErrors() === true) {
             $errorsInline = implode(PHP_EOL, $model->errors);
             throw new \Exception("При проверке настроек произошла ошибка: {$errorsInline}" );
         }
     }
 
-    public function buildCommonAttributes()
+    /**
+     * Подготавливает общие настройки для конкретной модели
+     */
+    public function buildCommonSettings()
     {
-        $builer = SettingsBuilderFactory::build($this->behaviorSettings, $this->globalSettings);
+        $builder = SettingsBuilderFactory::build($this->behaviorSettings, $this->globalSettings, $this->uploader);
+        $this->commonSettings = $builder->getSettings();
+        unset($builder);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function prepareAttributeSettings()
+    {
+        if (!is_array($this->uploader->attributeParams)) {
+            throw new \Exception('Параметр имеет неверный формат');
+        }
+
+        foreach ($this->uploader->attributeParams as $fileAttribute => $attributeParam) {
+            $paramsModel = SettingsModelFactory::build($attributeParam, SettingsModel::SCENARIO_FILE_ATTRIBUTE_VALIDATE);
+            if ($paramsModel->validate() === false) {
+                $inlineErrors = implode(PHP_EOL, $paramsModel->errors);
+                throw new \Exception("В параметрах атрибута {$fileAttribute} есть ошибки: {$inlineErrors}");
+            }
+
+            $builder = SettingsBuilderFactory::build($paramsModel->attributes, $this->commonSettings, $this->uploader);
+            $attributeFinalParams = $builder->getSettings();
+            $attributeSettingsModel = SettingsModelFactory::build($attributeFinalParams, SettingsModel::SCENARIO_FINAL);
+            if ($attributeSettingsModel->hasErrors()) {
+                $inlineErrors = implode(PHP_EOL, $attributeSettingsModel->errors);
+                throw new \Exception("В настройках атрибута {$fileAttribute} присутствуют ошибки: {$inlineErrors}");
+            }
+
+            $this->preparedSettings[$fileAttribute] = $attributeSettingsModel->attributes;
+        }
     }
 }

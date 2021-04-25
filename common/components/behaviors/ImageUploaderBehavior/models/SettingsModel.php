@@ -19,6 +19,11 @@ class SettingsModel extends \yii\base\Model
      */
     public const SCENARIO_FINAL = 'finalValidate';
     /**
+     * Валидируем парамтры для каждого атрибута
+     */
+    public const SCENARIO_VALIDATE_ATTRIBUTE_PARAMS = 'validateAttributeParams';
+
+    /**
      * @var
      */
     public $previewSettings;
@@ -96,6 +101,12 @@ class SettingsModel extends \yii\base\Model
                     SettingsCollecotor::REPLACE_DUPLICATE_SETTING_NAME
                 ],
                 'boolean'
+            ],
+            [
+                ['dbAttribute'],
+                'string',
+                'max' => 512,
+                'on' => [static::SCENARIO_FILE_ATTRIBUTE_VALIDATE, static::SCENARIO_FINAL],
             ],
         ];
     }

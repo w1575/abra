@@ -114,6 +114,9 @@ class ImageUploaderBehavior extends \yii\base\Behavior
         $this->attributeSettings = $values;
     }
 
+    /**
+     * @return array
+     */
     public function getAttributeSettings()
     {
         return $this->attributeSettings;
@@ -134,7 +137,8 @@ class ImageUploaderBehavior extends \yii\base\Behavior
         $collector = SettingCollectorFactory::build($this);
         $collector->prepareCommonSettings();
         $collector->validateCommonSettings();
-        $collector->buildCommonAttributes();
+        $collector->buildCommonSettings();
+        $collector->prepareAttributeSettings();
         $this->attributeSettings = $collector->preparedSettings;
         $settings = $this->attributeSettings;
 //        unset($collector);

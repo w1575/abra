@@ -19,6 +19,7 @@ class SettingsBuilderFactory
         $model->majorSettings = $majorSettings;
         $model->minorSettings = $minorSettings;
         $model->uploader = $uploader;
+        $model->buildSettings();;
 
         return $model;
     }
