@@ -117,11 +117,19 @@ class WebCompany extends \yii\db\ActiveRecord
         return [
             'uploadImages' => [
                 'class' => ImageUploaderBehavior::class,
-
-                'attributeSettings' => [
+                'attributeParams' => [
                     'logoAttribute' => [
-//                        'dbAttribute' => 'logo_path',
-                        'previewSettings' => false,
+//                        'previewSettings' => false,
+                        'dbAttribute' => 'logo_path',
+                    ],
+                    'testAttribute' => [
+                        'previewSettings' => [
+                            'width' => 122,
+                            'height' => 10,
+                            'quality' => 10,
+                            'prefixLength' => 2,
+                            'folder' => 'preview',
+                        ],
                     ],
                 ],
             ],

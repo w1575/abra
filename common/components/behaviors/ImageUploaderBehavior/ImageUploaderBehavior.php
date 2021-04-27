@@ -4,9 +4,11 @@
 namespace common\components\behaviors\ImageUploaderBehavior;
 
 use common\components\behaviors\ImageUploaderBehavior\factories\SettingCollectorFactory;
+use common\components\behaviors\ImageUploaderBehavior\factories\SettingsBuilderFactory;
 use Faker\Factory;
 use yii\base\Model;
 use yii\db\ActiveRecord;
+use yii\db\ForeignKeyConstraint;
 
 /**
  * Class ImageUploaderBehavior позволяет загружать файлы на сервер и записывать путь в колонку
@@ -135,13 +137,20 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     public function init()
     {
         $collector = SettingCollectorFactory::build($this);
-        $collector->prepareCommonSettings();
-        $collector->validateCommonSettings();
-        $collector->buildCommonSettings();
-        $collector->prepareAttributeSettings();
-        $this->attributeSettings = $collector->preparedSettings;
-        $settings = $this->attributeSettings;
-//        unset($collector);
+        $collector->prepareSettings();
+        $globalSettings = $collector->getGlobalSettings();
+        $behaviorSettings = $collector->getBehaviorSettings();
+        $commonSettingsModel = SettingsBuilderFactory::build($behaviorSettings, $globalSettings, $collector);
+        $commonSettings = $commonSettingsModel->getSettings();
+        $finalSettings = [];
+        $attributeSettings = $collector->getAttributeSettings();
+        foreach ($attributeSettings as $attributeName => $attributeSetting) {
+            $finalSettingsBuilder = SettingsBuilderFactory::build($attributeSetting, $commonSettings, $collector);
+            $finalSettings[$attributeName] = $finalSettingsBuilder->getSettings();
+        }
+        $settings = $finalSettings;
+
+
 
     }
 

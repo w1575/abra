@@ -36,9 +36,9 @@ class SettingsBuilder
     public function buildSettings()
     {
         $settingNames = $this->collector->settingNames;
-        unset($settingNames[SettingsCollecotor::PREVIEW_SETTING_NAME]);
+//        unset($settingNames[SettingsCollecotor::PREVIEW_SETTING_NAME]);
         foreach ($settingNames as $settingName) {
-            $this->{"{$settingNames}Build"}();
+            $this->{"{$settingName}Build"}();
         }
     }
 
@@ -50,7 +50,7 @@ class SettingsBuilder
      */
     private function setPath($settingName, $firstSymbol, $separator)
     {
-        $majorValue = isset($this->majorSettings[$settingName]) ?? null;
+        $majorValue = $this->majorSettings[$settingName] ?? null;
         $minorValue = $this->minorSettings[$settingName] ?? null;
         if (empty($majorValue)) {
             if (empty($minorValue)) {
@@ -108,11 +108,32 @@ class SettingsBuilder
     }
 
     /**
+     * Собирает настройки для превьюшек
+     */
+    public function previewSettingsBuild()
+    {
+        $settingName = SettingsCollecotor::PREVIEW_SETTING_NAME;
+        if ($this->majorSettings[$settingName] === false) {
+            $this->settings[$settingName] = false;
+        } else {
+            foreach ($this->collector->previewSettingNames as $previewSettingName) {
+                $majorSetting = $this->majorSettings[$settingName][$previewSettingName] ?? null;
+                $minorSetting = $this->minorSettings[$settingName][$previewSettingName] ?? null;
+                $this->settings[$settingName][$previewSettingName]
+                    = $majorSetting
+                    ?? $minorSetting
+                    ?? null
+                ;
+            }
+        }
+    }
+
+    /**
      * @param $settingName string выбирает одну из настроек и устнавливает ее как итоговую
      */
     private function oneOfTwo($settingName)
     {
-        $majorValue = isset($this->majorSettings[$settingName]) ?? null;
+        $majorValue = $this->majorSettings[$settingName] ?? null;
         $minorValue = $this->minorSettings[$settingName] ?? null;
         $this->settings[$settingName] =  $majorValue ?? $minorValue;
     }
@@ -124,6 +145,8 @@ class SettingsBuilder
     {
         return $this->settings;
     }
+
+
 
 
 

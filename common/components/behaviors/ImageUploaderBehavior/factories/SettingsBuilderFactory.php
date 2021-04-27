@@ -13,12 +13,12 @@ class SettingsBuilderFactory
      * @param $minorSettings
      * @return SettingsBuilder
      */
-    public static function build($majorSettings, $minorSettings, $uploader)
+    public static function build($majorSettings, $minorSettings, $collector)
     {
         $model = new SettingsBuilder();
         $model->majorSettings = $majorSettings;
         $model->minorSettings = $minorSettings;
-        $model->uploader = $uploader;
+        $model->collector = $collector;
         $model->buildSettings();;
 
         return $model;

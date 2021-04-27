@@ -18,7 +18,7 @@ final class SettingsModelFactory
     {
         $model = new SettingsModel();
         $model->scenario = $scenario;
-        $model->load($params);
+        $model->attributes = $params;
         $model->validate();
         return $model;
     }

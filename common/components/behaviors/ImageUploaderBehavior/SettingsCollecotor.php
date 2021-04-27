@@ -163,7 +163,7 @@ class SettingsCollecotor extends \yii\base\Component
      */
     public function buildCommonSettings()
     {
-        $builder = SettingsBuilderFactory::build($this->behaviorSettings, $this->globalSettings, $this->uploader);
+        $builder = SettingsBuilderFactory::build($this->behaviorSettings, $this->globalSettings, $this);
         $this->commonSettings = $builder->getSettings();
         unset($builder);
     }
@@ -184,15 +184,45 @@ class SettingsCollecotor extends \yii\base\Component
                 throw new \Exception("В параметрах атрибута {$fileAttribute} есть ошибки: {$inlineErrors}");
             }
 
-            $builder = SettingsBuilderFactory::build($paramsModel->attributes, $this->commonSettings, $this->uploader);
-            $attributeFinalParams = $builder->getSettings();
-            $attributeSettingsModel = SettingsModelFactory::build($attributeFinalParams, SettingsModel::SCENARIO_FINAL);
-            if ($attributeSettingsModel->hasErrors()) {
-                $inlineErrors = implode(PHP_EOL, $attributeSettingsModel->errors);
-                throw new \Exception("В настройках атрибута {$fileAttribute} присутствуют ошибки: {$inlineErrors}");
-            }
-
-            $this->preparedSettings[$fileAttribute] = $attributeSettingsModel->attributes;
+            $this->attributeSettings[$fileAttribute] = $paramsModel->attributes;
         }
+    }
+
+    /**
+     * Подготавливает настройки поведения, глобальные настройки и настройки атрибутов
+     * @throws \Exception
+     */
+    public function prepareSettings()
+    {
+        $this->prepareAttributeSettings();
+        $this->prepareCommonSettings();
+    }
+
+    /**
+     * Возвращает настройки для поведения
+     * @return array
+     */
+    public function getBehaviorSettings()
+    {
+        return $this->behaviorSettings;
+    }
+
+
+    /**
+     * Возвращает настройки из приложения
+     * @return array
+     */
+    public function getGlobalSettings()
+    {
+        return $this->globalSettings;
+    }
+
+    /**
+     * Возвращает массив настроек для каждого аттрибута
+     * @return array
+     */
+    public function getAttributeSettings()
+    {
+        return $this->attributeSettings;
     }
 }
