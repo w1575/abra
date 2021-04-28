@@ -124,12 +124,13 @@ class ImageUploaderBehavior extends \yii\base\Behavior
         return $this->attributeSettings;
     }
 
-//    public function events()
-//    {
-////        return [
-////            ActiveRecord::EVENT_ => 'initParams'
-////        ];
-//    }
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_AFTER_VALIDATE => 'uploadFiles',
+            ActiveRecord::EVENT_AFTER_DELETE => 'deleteAfterDelete',
+        ];
+    }
 
     /**
      * Инициализация поведения
@@ -138,28 +139,62 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     {
         $collector = SettingCollectorFactory::build($this);
         $collector->prepareSettings();
+
         $globalSettings = $collector->getGlobalSettings();
         $behaviorSettings = $collector->getBehaviorSettings();
         $commonSettingsModel = SettingsBuilderFactory::build($behaviorSettings, $globalSettings, $collector);
+
         $commonSettings = $commonSettingsModel->getSettings();
-        $finalSettings = [];
+
         $attributeSettings = $collector->getAttributeSettings();
         foreach ($attributeSettings as $attributeName => $attributeSetting) {
             $finalSettingsBuilder = SettingsBuilderFactory::build($attributeSetting, $commonSettings, $collector);
-            $finalSettings[$attributeName] = $finalSettingsBuilder->getSettings();
+            $this->attributeSettings[$attributeName] = $finalSettingsBuilder->getSettings();
         }
-        $settings = $finalSettings;
-
-
-
     }
 
+
+
+    /**
+     * Тестовый метод, чтобы посмотреть какие настройки получились в итоге
+     */
+    public function showAllSettings()
+    {
+        echo '<pre>';
+        var_dump($this->attributeSettings);
+        echo '</pre>';
+    }
 
 
     public function getPreviewLink()
     {
 
     }
+
+    private function getFilePath()
+    {
+
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function uploadFiles()
+    {
+        $ownerModel = $this->owner;
+        if ($ownerModel->hasErrors()) {
+            return true;
+        }
+
+        foreach ($this->attributeSettings as $attributeName => $attributeSetting) {
+            $oldValue = $ownerModel->{$attributeSetting[SettingsCollecotor::DB_ATTRIBUTE_NAME]};
+            if (!empty($oldValue) and $attributeSetting[SettingsCollecotor::DELETE_ON_CHANGE_SETTING_NAME] === true) {
+
+            }
+        }
+    }
+
 
 
 

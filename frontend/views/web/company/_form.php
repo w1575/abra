@@ -34,6 +34,8 @@ use yii\widgets\ActiveForm;
 
     <?php endif; ?>
 
+    <?php $model->showAllSettings() ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

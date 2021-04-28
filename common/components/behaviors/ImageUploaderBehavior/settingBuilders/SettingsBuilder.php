@@ -117,8 +117,8 @@ class SettingsBuilder
             $this->settings[$settingName] = false;
         } else {
             foreach ($this->collector->previewSettingNames as $previewSettingName) {
-                $majorSetting = $this->majorSettings[$settingName][$previewSettingName] ?? null;
-                $minorSetting = $this->minorSettings[$settingName][$previewSettingName] ?? null;
+                $majorSetting = $this->majorSettings[$settingName][$previewSettingName] ?? false;
+                $minorSetting = $this->minorSettings[$settingName][$previewSettingName] ?? false;
                 $this->settings[$settingName][$previewSettingName]
                     = $majorSetting
                     ?? $minorSetting
@@ -133,8 +133,8 @@ class SettingsBuilder
      */
     private function oneOfTwo($settingName)
     {
-        $majorValue = $this->majorSettings[$settingName] ?? null;
-        $minorValue = $this->minorSettings[$settingName] ?? null;
+        $majorValue = $this->majorSettings[$settingName] ?? false;
+        $minorValue = $this->minorSettings[$settingName] ?? false;
         $this->settings[$settingName] =  $majorValue ?? $minorValue;
     }
 

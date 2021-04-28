@@ -9,6 +9,7 @@ return [
     'imageUploaderBehavior' => [
         'webPath' => '//abra-static.loc/',
         'folderPath' => '@static/',
+        'namePrefixLength' => 12,
         'previewSettings' => [
             'width' => 250,
             'height' => 120,
