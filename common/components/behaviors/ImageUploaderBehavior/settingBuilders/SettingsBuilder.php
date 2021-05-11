@@ -63,7 +63,7 @@ class SettingsBuilder
         } elseif ($majorValue[0] === $firstSymbol) {
             $this->settings[$settingName] = $majorValue;
         } else {
-            $this->settings[$settingName] = "{$minorValue}{$separator}{$minorValue}";
+            $this->settings[$settingName] = "{$minorValue}{$separator}{$majorValue}";
         }
     }
 
@@ -86,7 +86,7 @@ class SettingsBuilder
     /**
      * @return bool|mixed|null
      */
-    private function namePrefixLengthBuild()
+    private function namePrefixBuild()
     {
         $this->oneOfTwo(SettingsCollecotor::NAME_PREFIX_SETTING_NAME);
     }
