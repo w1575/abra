@@ -14,7 +14,7 @@ return [
             'width' => 250,
             'height' => 120,
             'quality' => 90,
-            'prefixLength' => 5,
+            'prefixName' => 'thumb_',
             'folder' => 'preview',
         ],
     ],
