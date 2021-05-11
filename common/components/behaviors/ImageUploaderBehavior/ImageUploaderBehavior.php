@@ -150,6 +150,11 @@ class ImageUploaderBehavior extends \yii\base\Behavior
         foreach ($attributeSettings as $attributeName => $attributeSetting) {
             $finalSettingsBuilder = SettingsBuilderFactory::build($attributeSetting, $commonSettings, $collector);
             $this->attributeSettings[$attributeName] = $finalSettingsBuilder->getSettings();
+            $dbAttributeName = $attributeSetting[SettingsCollecotor::DB_ATTRIBUTE_NAME] ?? null;
+            if (empty($dbAttributeName)) {
+                throw new \Exception('Не указан параметр ' . SettingsCollecotor::DB_ATTRIBUTE_NAME);
+            }
+            $this->attributeSettings[$attributeName][SettingsCollecotor::DB_ATTRIBUTE_NAME] = $dbAttributeName;
         }
     }
 
@@ -177,22 +182,66 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     }
 
     /**
-     *
      * @return bool
+     * @throws \yii\base\Exception
      */
-    public function uploadFiles()
+    public function uploadImages()
     {
+        /* @var $ownerModel ActiveRecord */
         $ownerModel = $this->owner;
         if ($ownerModel->hasErrors()) {
+            // если модель не прошла валидацию, то и нет смысла
+            // что-то загружать, ведь так?
             return true;
         }
 
         foreach ($this->attributeSettings as $attributeName => $attributeSetting) {
+
+            if ($this->owner->{$attributeName} === null) {
+                // для данного аттрибута ничего не загружено
+                continue;
+            }
+
             $oldValue = $ownerModel->{$attributeSetting[SettingsCollecotor::DB_ATTRIBUTE_NAME]};
             if (!empty($oldValue) and $attributeSetting[SettingsCollecotor::DELETE_ON_CHANGE_SETTING_NAME] === true) {
-
+                // если предположительно существует старый файл, и нужно вместо него поставить новый
+                $this->deleteImage($attributeName);
             }
+
+            $fullPath = $this->getFileFullPath($attributeName, $attributeSetting);
+
+
+
         }
+    }
+
+    /**
+     * Удаляет файл
+     * @param $attributeName
+     */
+    public function deleteImage($attributeName)
+    {
+        die('Сделать удаление файла');
+    }
+
+    /**
+     * @param $name string название атриубта
+     * @param $settings array массив с настройками атриубута
+     * @return string полный путь к файлу в файловой системе
+     * @throws \yii\base\Exception
+     */
+    private function getFileFullPath($name, $settings)
+    {
+        $prefixLength = (int)$settings[SettingsCollecotor::NAME_PREFIX_SETTING_NAME] ?? 0;
+        $fileName = $this->owner->{$name}->baseName;
+        if ($prefixLength > 0) {
+            $prefix = \yii::$app->security->generateRandomString($prefixLength);
+            $fileName = "{$prefix}_{$fileName}" ;
+        }
+
+        $folderPath = $settings[SettingsCollecotor::FOLDER_PATH_SETTING_NAME];
+
+        return $folderPath . DIRECTORY_SEPARATOR . $fileName;
     }
 
 
