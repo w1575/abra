@@ -38,7 +38,7 @@ class SettingsModel extends \yii\base\Model
     /**
      * @var
      */
-    public $namePrefixLength;
+    public $namePrefix;
     /**
      * @var
      */

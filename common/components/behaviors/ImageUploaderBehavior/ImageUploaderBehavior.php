@@ -8,7 +8,8 @@ use common\components\behaviors\ImageUploaderBehavior\factories\SettingsBuilderF
 use Faker\Factory;
 use yii\base\Model;
 use yii\db\ActiveRecord;
-use yii\db\ForeignKeyConstraint;
+use Yii;
+use Imagine\Image\Box;
 
 /**
  * Class ImageUploaderBehavior позволяет загружать файлы на сервер и записывать путь в колонку
@@ -66,7 +67,7 @@ class ImageUploaderBehavior extends \yii\base\Behavior
      * префикс не будет сгенерирован
      * @example  для файла с именем image_17.png будет сгенерировано имя 0du87dnm_image_17.png
      */
-    public $namePrefixLength; //  = 8
+    public $namePrefix; //  = 8
     /**
      * @var bool если указан false, то к имени файла будет добавляться произвольный суффикс
      */
@@ -107,6 +108,10 @@ class ImageUploaderBehavior extends \yii\base\Behavior
      * @var array подготовленные настройки для каждого атрибута
      */
     private $attributeSettings  = [];
+//    /**
+//     * @var bool загружать ли автоматически после успешной валидации
+//     */
+//    public $uploadAfterValidate;
 
     /**
      * @param $values array устанавливает атрибуты настроек для каждого атрибута файла
@@ -127,8 +132,8 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     public function events()
     {
         return [
-            ActiveRecord::EVENT_AFTER_VALIDATE => 'uploadFiles',
-            ActiveRecord::EVENT_AFTER_DELETE => 'deleteAfterDelete',
+            ActiveRecord::EVENT_AFTER_VALIDATE => 'uploadImages',
+            ActiveRecord::EVENT_AFTER_DELETE => 'deleteImagesAfterItemDeleted',
         ];
     }
 
@@ -182,8 +187,8 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     }
 
     /**
+     *
      * @return bool
-     * @throws \yii\base\Exception
      */
     public function uploadImages()
     {
@@ -192,12 +197,14 @@ class ImageUploaderBehavior extends \yii\base\Behavior
         if ($ownerModel->hasErrors()) {
             // если модель не прошла валидацию, то и нет смысла
             // что-то загружать, ведь так?
-            return true;
+            return false;
         }
 
         foreach ($this->attributeSettings as $attributeName => $attributeSetting) {
+            // в приницпе можно просто выбрать ключи из массива и пробежаться по ним
+            // НО в приницпе пока что оставлю так
 
-            if ($this->owner->{$attributeName} === null) {
+            if ($ownerModel->{$attributeName} === null) {
                 // для данного аттрибута ничего не загружено
                 continue;
             }
@@ -208,7 +215,9 @@ class ImageUploaderBehavior extends \yii\base\Behavior
                 $this->deleteImage($attributeName);
             }
 
-            $fullPath = $this->getFileFullPath($attributeName, $attributeSetting);
+            $this->saveImage($attributeName);
+            $this->generatePreview($attributeName);
+
 
 
 
@@ -225,23 +234,116 @@ class ImageUploaderBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param $name string название атриубта
-     * @param $settings array массив с настройками атриубута
+     * Генерирует название файла для нового файла и возвращает полный путь к нему
+     * @param $name string название атрибута
      * @return string полный путь к файлу в файловой системе
      * @throws \yii\base\Exception
+     * @return string путь к новому файлу
      */
-    private function getFileFullPath($name, $settings)
+    private function generateFileFullPath($name)
     {
+        $settings = $this->attributeSettings[$name];
         $prefixLength = (int)$settings[SettingsCollecotor::NAME_PREFIX_SETTING_NAME] ?? 0;
-        $fileName = $this->owner->{$name}->baseName;
         if ($prefixLength > 0) {
             $prefix = \yii::$app->security->generateRandomString($prefixLength);
-            $fileName = "{$prefix}_{$fileName}" ;
+            $fileName = "{$prefix}_{$name}" ;
         }
 
         $folderPath = $settings[SettingsCollecotor::FOLDER_PATH_SETTING_NAME];
+        $this->createFolderIfNotExist($folderPath);
 
         return $folderPath . DIRECTORY_SEPARATOR . $fileName;
+    }
+
+    /**
+     * @param $attributeName
+     * @param $settings
+     * @throws \yii\base\Exception
+     */
+    private function saveImage($attributeName)
+    {
+        $ownerModel = $this->owner;
+        $old = umask(0);
+        $fileName = $fileName = $this->owner->{$attributeName}->baseName;
+        $fullPath = $this->generateFileFullPath($fileName);
+        $ownerModel->{$attributeName}->saveAs($fullPath);
+        $dbAttributeName = $this->attributeSettings[$attributeName][SettingsCollecotor::DB_ATTRIBUTE_NAME];
+        $ownerModel->{$dbAttributeName} = $fileName;
+
+        umask($old);
+    }
+
+    /**
+     * Возвращает путь к картинке на стороне сервера
+     * @param $attributeName
+     * @return mixed|null
+     */
+    public function getImageServerPath($attributeName)
+    {
+        $settings = $this->attributeSettings[$attributeName];
+        $dbAttribute = $settings[SettingsCollecotor::DB_ATTRIBUTE_NAME];
+        $fileName = $this->owner->{$dbAttribute};
+        return $fileName === null
+            ? null
+            : $settings[SettingsCollecotor::FOLDER_PATH_SETTING_NAME] . DIRECTORY_SEPARATOR . $fileName
+        ;
+    }
+
+    /**
+     * Удаляет картинку и, если есть, превьюшку изображения после удаления записи
+     */
+    public function deleteImagesAfterItemDeleted()
+    {
+        foreach ($this->attributeSettings as $attributeName => $attributeSetting) {
+            $path = $this->getImageServerPath($attributeName);
+            if ($path !== null) {
+                if (unlink($path) === false) {
+                    Yii::$app->session->setFlash('warning', "Не удалось удалить {$path}");
+                }
+            }
+        }
+    }
+
+    /**
+     * Создает и сохраняет превью для изображения
+     * @param $attributeName
+     * @throws \Exception
+     */
+    private function generatePreview($attributeName)
+    {
+        $previewSettings = $this->attributeSettings[$attributeName][SettingsCollecotor::PREVIEW_SETTING_NAME] ?? false;
+        if ($previewSettings !== false) {
+            $subFolder = $previewSettings[SettingsCollecotor::PREVIEW_SETTING_FOLDER_NAME] ?? false;
+            $namePrefix = $previewSettings[SettingsCollecotor::PREVIEW_SETTING_IMAGE_PREFIX_NAME] ?? false;
+            if ($subFolder === false and $namePrefix === false) {
+                $previewSubFolderName = SettingsCollecotor::PREVIEW_SETTING_FOLDER_NAME;
+                $previewPrefixName = SettingsCollecotor::PREVIEW_SETTING_IMAGE_PREFIX_NAME;
+                throw new \Exception("Для превью должен быть указан как минимум один из атрибутов: {$previewSubFolderName} или {$previewPrefixName}");
+            }
+
+            $name = ($namePrefix ?? '') . $this->{$attributeName};
+
+            $width = $previewSettings[SettingsCollecotor::PREVIEW_SETTING_WIDTH_NAME];
+            $height = $previewSettings[SettingsCollecotor::PREVIEW_SETTING_HEIGHT_NAME];
+            $quality = $previewSettings[SettingsCollecotor::PREVIEW_SETTING_QUALITY_NAME];
+
+        }
+    }
+
+    /**
+     * Создает папку, если ее не существует в файловой системе
+     * @param $folderPath
+     */
+    private function createFolderIfNotExist($folderPath)
+    {
+        if (is_dir($folderPath) === false) {
+            $old = umask(0);
+            $isCreated = mkdir($folderPath);
+            umask($old);
+            if ($isCreated === false) {
+                throw new \Exception("Не удалось создать папку {$folderPath}");
+            }
+        }
     }
 
 

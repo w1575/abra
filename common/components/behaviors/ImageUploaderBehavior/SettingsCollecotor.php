@@ -22,7 +22,7 @@ class SettingsCollecotor extends \yii\base\Component
     public const PREVIEW_SETTING_NAME = 'previewSettings';
     public const WEB_PATH_SETTING_NAME = 'webPath';
     public const FOLDER_PATH_SETTING_NAME = 'folderPath';
-    public const NAME_PREFIX_SETTING_NAME = 'namePrefixLength';
+    public const NAME_PREFIX_SETTING_NAME = 'namePrefix';
     public const REPLACE_DUPLICATE_SETTING_NAME = 'replaceDuplicate';
     public const DELETE_ON_CHANGE_SETTING_NAME = 'deleteOnChange';
     public const DB_ATTRIBUTE_NAME = 'dbAttribute';
@@ -30,7 +30,7 @@ class SettingsCollecotor extends \yii\base\Component
     public const PREVIEW_SETTING_WIDTH_NAME = 'width';
     public const PREVIEW_SETTING_HEIGHT_NAME = 'height';
     public const PREVIEW_SETTING_QUALITY_NAME = 'quality';
-    public const PREVIEW_SETTING_PREFIX_LENGTH_NAME = 'prefixLength';
+    public const PREVIEW_SETTING_IMAGE_PREFIX_NAME = 'imagePrefix';
     public const PREVIEW_SETTING_FOLDER_NAME = 'folder';
 //    width
 //    height

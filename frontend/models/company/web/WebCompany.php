@@ -119,15 +119,6 @@ class WebCompany extends \yii\db\ActiveRecord
                 'class' => ImageUploaderBehavior::class,
                 'attributeParams' => [
                     'logoAttribute' => [
-                        'previewSettings' =>
-                            [
-                                'prefixLength' => 12,
-                            ],
-                        'dbAttribute' => 'logo_path',
-                        'folderPath' => 'web-company-logos',
-                        'replaceDuplicate' => true,
-                    ],
-                    'testAttribute' => [
                         'previewSettings' => [
                             'width' => 122,
                             'height' => 10,
@@ -135,8 +126,14 @@ class WebCompany extends \yii\db\ActiveRecord
                             'prefixLength' => 2,
                             'folder' => 'preview',
                         ],
-                        'deleteOnChange' => true,
+                        'dbAttribute' => 'logo_path',
+                        'folderPath' => 'web-company-logos',
+                        'replaceDuplicate' => true,
                     ],
+//                    'testAttribute' => [
+//
+//                        'deleteOnChange' => true,
+//                    ],
                 ],
             ],
         ];

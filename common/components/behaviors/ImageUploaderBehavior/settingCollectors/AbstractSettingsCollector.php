@@ -77,4 +77,5 @@ abstract class AbstractSettingsCollector implements SettingsCollectorInterface
         $this->setSettingsByPropertyName(SettingsCollecotor::PREVIEW_SETTING_NAME);
     }
 
+
 }
