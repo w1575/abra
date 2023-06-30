@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap-utilities.css')  }}">
     <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap-utilities.rtl.css')  }}">
 
+    <link rel="stylesheet" href="{{ asset('front/css/old.css') }}">
     <link rel="stylesheet" href="{{ asset('front/css/app.css') }}">
 
     @livewireStyles
@@ -28,7 +29,6 @@
 
     @livewireScripts
     <script src="{{ asset('front/bootstrap/js/bootstrap.js') }}"></script>
-{{--    <script src="{{ asset('front/bootstrap/js/bootstrap.esm.js') }}"></script>--}}
     <script src="{{ asset('front/bootstrap/js/bootstrap.bundle.js') }}"></script>
 </body>
 </html>
