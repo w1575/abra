@@ -8,14 +8,9 @@
     <title> {{ $title ?? 'base title' }} </title>
 
     <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap-reboot.css')  }}">
-    <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap-reboot.rtl.css')  }}">
-
     <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap.css')  }}">
-    <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap.rtl.css')  }}">
     <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap-grid.css')  }}">
-    <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap-grid.rtl.css')  }}">
     <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap-utilities.css')  }}">
-    <link rel="stylesheet" href="{{ asset('front/bootstrap/css/bootstrap-utilities.rtl.css')  }}">
 
     <link rel="stylesheet" href="{{ asset('front/css/old.css') }}">
     <link rel="stylesheet" href="{{ asset('front/css/app.css') }}">

@@ -2,6 +2,7 @@
     <table class="table table-primary table-responsive">
         <tr>
             <td> {{ __('telegram_accounts.id') }} </td>
+            <td> {{ __('telegram_accounts.telegram_id') }} </td>
             <td> {{ __('telegram_accounts.username') }} </td>
             <td> {{ __('telegram_accounts.name') }} </td>
             <td> {{ __('telegram_accounts.avatar') }} </td>
@@ -28,6 +29,6 @@
     <div class="d-flex">
         <?php /** @var \Illuminate\Pagination\Paginator $telegramAccounts  */ ?>
 
-        {{ $telegramAccounts->links('pagination::tailwind') }}
+        {{ $telegramAccounts->links() }}
     </div>
 </div>
