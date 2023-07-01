@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('telegram_accounts', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->bigInteger('telegram_id');
+            $table->bigInteger('telegram_id')->unique()->nullable();
             $table->string('username')->nullable();
             $table->string('name')->nullable();
             $table->string('avatar')->nullable();

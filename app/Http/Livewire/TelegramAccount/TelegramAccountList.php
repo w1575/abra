@@ -16,7 +16,7 @@ class TelegramAccountList extends Component
 
     public function render(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $telegramAccounts = TelegramAccount::query()->simplePaginate();
+        $telegramAccounts = TelegramAccount::query()->paginate();
         return view('livewire.telegram-account.telegram-account-list', ['telegramAccounts' => $telegramAccounts]);
     }
 }

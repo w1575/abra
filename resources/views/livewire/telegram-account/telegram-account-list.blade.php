@@ -23,6 +23,11 @@
                 <td> {{ $telegramAccount->status }} </td>
             </tr>
         @endforeach
-
     </table>
+
+    <div class="d-flex">
+        <?php /** @var \Illuminate\Pagination\Paginator $telegramAccounts  */ ?>
+
+        {{ $telegramAccounts->links('pagination::tailwind') }}
+    </div>
 </div>
