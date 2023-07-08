@@ -48,6 +48,14 @@ RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.1
 RUN groupadd --force -g $WWWGROUP sail
 RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 
+RUN apt-get update && apt-get install -y nano
+
+RUN echo "alias a='php artisan'\n \
+alias pest='./vendor/bin/pest' " > /home/sail/.bash_aliases
+RUN echo "alias a='php artisan'" > /root/.bash_aliases
+
+RUN apt install php8.2-amqp -y
+
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.1/cli/conf.d/99-sail.ini

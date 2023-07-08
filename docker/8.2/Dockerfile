@@ -54,6 +54,8 @@ RUN echo "alias a='php artisan'\n \
 alias pest='./vendor/bin/pest' " > /home/sail/.bash_aliases
 RUN echo "alias a='php artisan'" > /root/.bash_aliases
 
+RUN apt install php8.2-amqp -y
+
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.2/cli/conf.d/99-sail.ini

@@ -49,9 +49,27 @@ services:
                 - '${DB_USERNAME}'
             retries: 3
             timeout: 5s
+    rabbitmq:
+        image: rabbitmq:3.10.7-management
+        hostname: rabbitmq
+        restart: unless-stopped
+        environment:
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
+            - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+        networks:
+            - sail
+        volumes:
+            - rabbitmq_data:/var/lib/rabbitmq/
+            - rabbitmq_log:/var/log/rabbitmq/
+        ports:
+            - 15672:15672
+            - 5672:5672
 networks:
     sail:
         driver: bridge
 volumes:
     sail-pgsql:
         driver: local
+    rabbitmq_data:
+    rabbitmq_log:

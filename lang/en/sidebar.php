@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'users' => 'Users',
+    'user' => 'Users',
     'telegram_accounts' => 'Telegram Accounts',
     'clouds' => 'Cloud storages',
     'cloud_accounts' => 'Cloud Accounts',
