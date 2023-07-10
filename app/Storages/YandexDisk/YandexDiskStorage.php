@@ -117,6 +117,6 @@ class YandexDiskStorage implements YandexDiskStorageContract
 
     public function getStorageSettings(): StorageSettingsData
     {
-        // TODO: Implement getStorageSettings() method.
+        return new StorageSettingsData();
     }
 }
