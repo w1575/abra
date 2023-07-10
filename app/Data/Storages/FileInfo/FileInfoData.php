@@ -2,11 +2,13 @@
 
 namespace App\Data\Storages\FileInfo;
 
+use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
 
 class FileInfoData extends Data
 {
     public function __construct(
+        #[MapName('name1'), MapName('name2')]
         public string $name,
         public int $size = 0,
         public string $fullPath = '',
