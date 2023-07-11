@@ -19,3 +19,5 @@ $bot->onCommand('start', StartConversation::class)->description('Who r u?');
 
 $bot->registerCommand(TestCommand::class);
 //$bot->registerCommand();
+
+//$bot->onMessage();

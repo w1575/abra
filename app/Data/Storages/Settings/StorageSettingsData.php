@@ -8,7 +8,9 @@ class StorageSettingsData extends Data
 {
     public function __construct(
         public bool $generateFileName = false,
-        public bool $replaceFileWithSameName = false,
+        public bool $overwrite = false,
         public int $lengthOfGeneratedName = 32,
-    ) {}
+    ) {
+
+    }
 }

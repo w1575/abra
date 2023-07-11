@@ -8,5 +8,6 @@ class YandexDiskConfigData extends Data
 {
     public function __construct(
         public $debugToken,
-    ) {}
+    ) {
+    }
 }

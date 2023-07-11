@@ -13,5 +13,6 @@ class EmbeddedData extends Data
         public string $sort,
         #[DataCollectionOf(FileInfoData::class)]
         public DataCollection $items,
-    ) {}
+    ) {
+    }
 }

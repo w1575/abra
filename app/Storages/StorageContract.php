@@ -3,6 +3,7 @@
 namespace App\Storages;
 
 use App\Data\Storages\Common\DiskSpaceData;
+use App\Data\Storages\Common\UploadFileData;
 use App\Data\Storages\FileInfo\FileInfoData;
 use App\Data\Storages\Settings\StorageSettingsData;
 use App\Data\Storages\YandexDisk\FilesListResponseData;
@@ -12,10 +13,6 @@ use Spatie\LaravelData\DataCollection;
 
 interface StorageContract
 {
-    /**
-     * @param  DataObject  $config
-     * @return mixed
-     */
     public function setConfig(mixed $config): static;
 
     public function setStorageSettings(StorageSettingsData $settings): static;
@@ -35,10 +32,10 @@ interface StorageContract
     public function getFileInfo(string $filePathOnCloud): FileInfoData;
 
     /**
-     * @param  string  $fileLocalPath
-     * @return mixed
+     * @param  UploadFileData  $uploadFileData
+     * @return FileInfoData
      */
-    public function uploadFile(string $fileLocalPath): FileInfoData;
+    public function uploadFile(UploadFileData $uploadFileData): ?FileInfoData;
 
     public function createFolder(string $folderPath): bool;
 

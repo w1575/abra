@@ -3,32 +3,36 @@
 namespace App\Storages\YandexDisk;
 
 use App\Data\Storages\Common\DiskSpaceData;
+use App\Data\Storages\Common\UploadFileData;
 use App\Data\Storages\Config\YandexDiskConfigData;
 use App\Data\Storages\FileInfo\FileInfoData;
 use App\Data\Storages\Settings\StorageSettingsData;
 use App\Data\Storages\YandexDisk\FilesListResponseData;
+use App\Data\Storages\YandexDisk\UploadFile\UploadUrlResponseData;
+use App\Storages\Traits\DecodeResponseBodyTrait;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Utils;
+use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 use Spatie\LaravelData\DataCollection;
 
 class YandexDiskStorage implements YandexDiskStorageContract
 {
+    use DecodeResponseBodyTrait;
+
     protected StorageSettingsData $settingsData;
 
-
-
     public function __construct(
-        protected ClientInterface $client
-    )
-    {
-
+        protected ClientInterface $client,
+    ) {
+        $this->settingsData = new StorageSettingsData();
     }
 
     protected function getAuthorizationHeader(): array
     {
         return [
-            'Authorization' => 'OAuth ' . env('YANDEX_DISK_OAUTH_TOKEN'), // TODO: temporary solution
+            'Authorization' => 'OAuth '.env('YANDEX_DISK_OAUTH_TOKEN'), // TODO: temporary solution
         ];
     }
 
@@ -48,8 +52,8 @@ class YandexDiskStorage implements YandexDiskStorageContract
     }
 
     /**
-     * @inheritDoc
-     * @param YandexDiskConfigData $config
+     * @param  YandexDiskConfigData $config
+     * @return static
      */
     public function setConfig(mixed $config): static
     {
@@ -65,7 +69,8 @@ class YandexDiskStorage implements YandexDiskStorageContract
         $response = $this->sendRequest(
             'GET',
             [
-                'path' => $folder, 'limit' => 10
+                'path' => $folder,
+                'limit' => 10
             ]
         );
 
@@ -79,19 +84,68 @@ class YandexDiskStorage implements YandexDiskStorageContract
      */
     public function getFileInfo(string $filePathOnCloud): FileInfoData
     {
-        $data = FileInfoData::from([]);
-
-        return $data; // TODO: make this
+        return FileInfoData::from([]); // TODO: make this
     }
 
     /**
      * @inheritDoc
+     * @throws GuzzleException
      */
-    public function uploadFile(string $fileLocalPath): FileInfoData
+    public function uploadFile(UploadFileData $uploadFileData): ?FileInfoData
     {
-        $data = FileInfoData::from([]);
+        $settings = $this->settingsData;
+        $localPath = $uploadFileData->localFilePath;
+        $fileName = $settings->generateFileName
+            ? Str::random($settings->lengthOfGeneratedName) . pathinfo($localPath, PATHINFO_EXTENSION)
+            : basename($localPath)
+        ;
 
-        return $data; // TODO: make this
+        $uploadFileData->remoteFullPath = $uploadFileData->remoteFilePath . $fileName;
+
+        $uploadUrlData = $this->getUploadLink($uploadFileData);
+
+        if ($uploadUrlData === null) {
+            // todo: maybe throw exception
+            return null;
+        }
+
+        $params = [
+            'body' => Utils::tryFopen($uploadFileData->localFilePath, 'r'),
+        ]; // RIP SOLID completely :(
+
+        $response = $this->client->request(
+            $uploadUrlData->method,
+            $uploadUrlData->href,
+            $params
+        );
+
+        if ($response->getStatusCode() === 201) {
+            $fileInfoData = new FileInfoData($fileName);
+            $fileInfoData->fullPath = $uploadFileData->remoteFullPath;
+
+            return $fileInfoData;
+        }
+
+        // log for error
+
+        return new FileInfoData();
+    }
+
+    protected function getUploadLink(UploadFileData $uploadFileData): ?UploadUrlResponseData
+    {
+        $params = [
+            'path' => $uploadFileData->remoteFullPath,
+            'overwrite' => $this->settingsData->overwrite,
+        ];
+        try {
+            $result = $this->sendRequest('GET', $params, 'resources/upload');
+            return UploadUrlResponseData::from(
+                $this->decodeResponseBody($result)
+            );
+        } catch (GuzzleException $e) {
+            // TODO: log for error
+            return null;
+        }
     }
 
     public function createFolder(string $folderPath): bool
