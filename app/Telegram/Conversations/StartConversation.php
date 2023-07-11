@@ -16,11 +16,6 @@ class StartConversation extends Conversation
     }
     protected function getLocales(): array|string
     {
-//        return str_replace(
-//            '=',
-//            '=>',
-//            http_build_query(config('app.locales'), null, ',')
-//        );
         return implode(PHP_EOL, array_map(
             fn(string $v, string $k) => sprintf("%s => '%s'", $k, $v),
             config('app.locales'),
@@ -52,6 +47,7 @@ class StartConversation extends Conversation
         if (!in_array($locale, $this->getLocaleKeys())) {
             $bot->sendMessage('Выбран неверный язык (Invalid language selected).');
             $this->next('setLanguage');
+            return;
         }
 
         $this->setLocale();
@@ -73,6 +69,7 @@ class StartConversation extends Conversation
             return;
         }
         $bot->sendMessage(__('telegram.start_command.token_set'));
+        $this->end();
     }
 
     private function setLocale(): void

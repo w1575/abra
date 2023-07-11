@@ -3,6 +3,7 @@
 
 use App\Telegram\Commands\TestCommand;
 use App\Telegram\Conversations\StartConversation;
+use App\Telegram\Handlers\OnMessageHandler;
 use SergiX44\Nutgram\Nutgram;
 
 /*
@@ -20,4 +21,4 @@ $bot->onCommand('start', StartConversation::class)->description('Who r u?');
 $bot->registerCommand(TestCommand::class);
 //$bot->registerCommand();
 
-//$bot->onMessage();
+$bot->onMessage(OnMessageHandler::class);

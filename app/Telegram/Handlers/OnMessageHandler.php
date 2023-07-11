@@ -8,6 +8,11 @@ class OnMessageHandler
 {
     public function __invoke(Nutgram $bot): void
     {
-        $bot->sendMessage('This is an handler!');
+        $random = rand(1, 1000);
+        file_put_contents(
+            storage_path('app/public/messages/message' . $random . '.json'),
+            json_encode($bot->message())
+        );
+        $bot->sendMessage($random . '!');
     }
 }

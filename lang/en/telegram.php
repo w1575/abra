@@ -7,4 +7,7 @@ return [
         'token_in_use' => 'Token already in use.',
         'token_set' => 'The token has been successfully installed. Now you can use the bot!'
     ],
+    'on_message' => [
+        'start_processing' => 'I\'m starting data processing.',
+    ],
 ];
