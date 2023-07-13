@@ -9,7 +9,6 @@ use SergiX44\Nutgram\Nutgram;
 
 class StartConversation extends Conversation
 {
-
     protected function getLocaleKeys(): array
     {
         return array_keys(config('app.locales'));
@@ -17,7 +16,7 @@ class StartConversation extends Conversation
     protected function getLocales(): array|string
     {
         return implode(PHP_EOL, array_map(
-            fn(string $v, string $k) => sprintf("%s => '%s'", $k, $v),
+            fn (string $v, string $k) => sprintf("%s => '%s'", $k, $v),
             config('app.locales'),
             $this->getLocaleKeys(),
         ));

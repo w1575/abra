@@ -1,11 +1,10 @@
 <?php
+
 /** @var SergiX44\Nutgram\Nutgram $bot */
 
 use App\Telegram\Commands\TestCommand;
 use App\Telegram\Conversations\StartConversation;
-use App\Telegram\Handlers\OnMessageHandler;
-use App\Telegram\Handlers\PhotoHandler;
-
+use App\Telegram\Middleware\CheckUserStatusMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +18,6 @@ use App\Telegram\Handlers\PhotoHandler;
 
 $bot->onCommand('start', StartConversation::class)->description('Who r u?');
 
-$bot->registerCommand(TestCommand::class);
+$bot->registerCommand(TestCommand::class)->middleware(CheckUserStatusMiddleware::class);
 
 require __DIR__ . '/telegram/files-handlers.php';

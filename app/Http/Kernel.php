@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Telegram\Middleware\CheckUserStatusMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
