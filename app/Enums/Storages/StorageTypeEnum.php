@@ -2,7 +2,7 @@
 
 namespace App\Enums\Storages;
 
-enum StorageTypeEnum
+enum StorageTypeEnum: string
 {
-
+    case YandexDisk = 'yandexDisk';
 }

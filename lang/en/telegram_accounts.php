@@ -2,9 +2,9 @@
 
 return [
     'id' => 'ID',
-    'telegram_id' => 'Telegram ID',
+    'telegram_id' => 'Bot ID',
     'username' => '@username',
-    'name' => 'Telegram Name',
+    'name' => 'Bot Name',
     'avatar' => 'Avatar',
     'token' => 'Link token',
     'linked_account' => 'Linked account',

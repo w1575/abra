@@ -27,7 +27,7 @@ class YandexGetListTest extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $yaDiskComponent = app(YandexDiskStorageContract::class);
 
