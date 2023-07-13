@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BotTokenController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\TelegramAccountController;
 use App\Http\Controllers\UserController;
@@ -21,3 +22,7 @@ Route::get('/', [MainController::class, 'index'])->name('main.index');
 Route::get('/user', [UserController::class, 'index'])->name('user.index');
 
 Route::get('/telegram-account', [TelegramAccountController::class, 'index'])->name('t.a.index');
+
+Route::get('/bot-token', [BotTokenController::class, 'index'])->name('b.t.index');
+
+Route::get('/bot-token/create', [BotTokenController::class, 'index'])->name('b.t.create');

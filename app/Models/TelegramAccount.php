@@ -36,7 +36,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|TelegramAccount whereUpdatedAt($value)
  * @method static Builder|TelegramAccount whereUserId($value)
  * @method static Builder|TelegramAccount whereUsername($value)
- * @property-read \App\Models\User|null $user
+ * @property-read User|null $user
  * @mixin \Eloquent
  */
 class TelegramAccount extends Model

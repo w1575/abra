@@ -15,6 +15,11 @@
             </a>
         </li>
         <li class="nav-item">
+            <a href="{{ route('b.t.index') }}" class="nav-link align-middle px-0">
+                <span class="ms-1 d-none d-sm-inline"> {{ __('sidebar.bot_tokens') }} </span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="#" class="nav-link align-middle px-0">
                 <span class="ms-1 d-none d-sm-inline"> {{ __('sidebar.clouds') }} </span>
             </a>

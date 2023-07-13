@@ -43,6 +43,13 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static Builder|User whereUpdatedAt($value)
  * @property-read DatabaseNotificationCollection <int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read Collection <int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read Collection<int, \App\Models\TelegramAccount> $telegramAccounts
+ * @property-read int|null $telegram_accounts_count
+ * @property-read Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read Collection<int, \App\Models\TelegramAccount> $telegramAccounts
+ * @property-read Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @mixin \Eloquent
  */
 class User extends Authenticatable
