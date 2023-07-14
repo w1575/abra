@@ -2,10 +2,14 @@
 
 namespace App\Telegram\Conversations;
 
+use App\Enums\TelegramAccount\StatusEnum;
+use App\Models\BotToken;
+use App\Models\TelegramAccount;
 use Exception;
 use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Types\User\User;
 
 class StartConversation extends Conversation
 {
@@ -67,6 +71,7 @@ class StartConversation extends Conversation
             $this->next('setToken');
             return;
         }
+        $this->createTelegramUser($bot->user(), $token);
         $bot->sendMessage(__('telegram.start_command.token_set'));
         $this->end();
     }
@@ -81,9 +86,21 @@ class StartConversation extends Conversation
      */
     private function validateToken(?string $token): void
     {
-        if (mb_strlen($token) < 5) {
-            throw new Exception(__('telegram.start_command.token_in_use'));
-            // TODO: make validation
-        }
+        BotToken::whereToken($token)->firstOr(callback: fn() => new Exception(__('bot_tokens.not_found')));
+    }
+
+    protected function createTelegramUser(?User $user, ?string $token): void
+    {
+        $name = $user->first_name . $user->last_name;
+        TelegramAccount::make([
+            'telegram_id' => $user->id,
+            'username' => $user->username ?? 'UserId' . $user->id,
+            'name' => empty($name) ? 'UserId' . $user->id : $name,
+            'avatar' => '',
+            'token' => $token,
+            'user_id' => null,
+            'status' => StatusEnum::Active->value,
+        ])->save();
+        BotToken::whereToken($token)->delete();
     }
 }

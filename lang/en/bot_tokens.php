@@ -7,4 +7,5 @@ return [
     'updated_at' => 'Updated at',
 
     'create' => 'Create',
+    'not_found' => 'Token not found.',
 ];

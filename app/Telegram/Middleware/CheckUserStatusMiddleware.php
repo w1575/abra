@@ -17,7 +17,7 @@ class CheckUserStatusMiddleware
     {
         $userExist = $this->validateUser($bot->user());
         if (!$userExist) {
-            $bot->sendMessage( __('bot-response.access.user_not_found'));
+            $bot->sendMessage(__('bot-response.access.user_not_found'));
             return;
         }
         $next($bot);

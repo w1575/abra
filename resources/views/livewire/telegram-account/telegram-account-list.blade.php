@@ -20,7 +20,7 @@
                 <td> {{ $telegramAccount->name }} </td>
                 <td> {{ $telegramAccount->avatar }} </td>
                 <td> {{ $telegramAccount->token }} </td>
-                <td> {{ $telegramAccount->user->name }} </td>
+                <td> {{ $telegramAccount->user?->name ?? '-'}} </td>
                 <td> {{ $telegramAccount->status }} </td>
             </tr>
         @endforeach

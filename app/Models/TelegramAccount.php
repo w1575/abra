@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\TelegramAccountFactory;
+use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -37,11 +38,17 @@ use Illuminate\Support\Carbon;
  * @method static Builder|TelegramAccount whereUserId($value)
  * @method static Builder|TelegramAccount whereUsername($value)
  * @property-read User|null $user
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class TelegramAccount extends Model
 {
     use HasFactory;
+
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at',
+    ];
 
     /**
      * @return BelongsTo
