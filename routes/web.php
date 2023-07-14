@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BotTokenController;
+use App\Http\Controllers\CloudStorageController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\TelegramAccountController;
 use App\Http\Controllers\UserController;
@@ -26,3 +27,5 @@ Route::get('/telegram-account', [TelegramAccountController::class, 'index'])->na
 Route::get('/bot-token', [BotTokenController::class, 'index'])->name('b.t.index');
 
 Route::get('/bot-token/create', [BotTokenController::class, 'index'])->name('b.t.create');
+
+Route::get('/storages', [CloudStorageController::class, 'index'])->name('c.s.index');

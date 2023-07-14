@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Data\Storages\Config;
+namespace App\Data\Storages\AccessConfigs;
 
 use Spatie\LaravelData\Data;
 
-class YandexDiskConfigData extends Data
+class YandexDiskAccessConfigData extends Data
 {
     public function __construct(
         public $debugToken,

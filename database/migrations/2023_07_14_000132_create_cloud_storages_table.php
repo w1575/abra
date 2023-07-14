@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Storages\StorageTypeEnum;
+use App\Models\TelegramAccount;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,10 +18,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(TelegramAccount::class)->constrained();
             $table->enum('storage_type', StorageTypeEnum::valuesList());
-            $table->json('storage_access')->nullable();
-            $table->json('storage_settings')->nullable();
+            $table->json('storage_settings')->nullable()->comment('Work settings');
+            $table->json('access_config')->nullable()->comment('Api access config');
         });
     }
 

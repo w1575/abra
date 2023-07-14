@@ -4,7 +4,7 @@ namespace App\Storages\YandexDisk;
 
 use App\Data\Storages\Common\DiskSpaceData;
 use App\Data\Storages\Common\UploadFileData;
-use App\Data\Storages\Config\YandexDiskConfigData;
+use App\Data\Storages\AccessConfigs\YandexDiskAccessConfigData;
 use App\Data\Storages\FileInfo\FileInfoData;
 use App\Data\Storages\Settings\StorageSettingsData;
 use App\Data\Storages\YandexDisk\FilesListResponseData;
@@ -52,7 +52,7 @@ class YandexDiskStorage implements YandexDiskStorageContract
     }
 
     /**
-     * @param  YandexDiskConfigData $config
+     * @param  YandexDiskAccessConfigData $config
      * @return static
      */
     public function setConfig(mixed $config): static

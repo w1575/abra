@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\CloudStorage;
+use App\Models\TelegramAccount;
 use Illuminate\Database\Seeder;
 
 class CloudStorageSeeder extends Seeder
@@ -12,6 +13,11 @@ class CloudStorageSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        for ($i = 0; $i < 10; $i++) {
+            CloudStorage::factory()
+                ->for(TelegramAccount::factory(), 'telegramAccount')
+                ->create()
+            ;
+        }
     }
 }

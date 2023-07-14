@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\Storages\StorageTypeEnum;
+use App\Models\TelegramAccount;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +20,11 @@ class CloudStorageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name,
+            'telegram_account_id' => (new TelegramAccount())->firstOrFail()?->id,
+            'storage_type' => StorageTypeEnum::YandexDisk->value,
+            'storage_settings' => null,
+            'storage_config' => null,
         ];
     }
 }

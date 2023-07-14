@@ -25,7 +25,7 @@ class TelegramAccountFactory extends Factory
             'avatar' => fake()->imageUrl(),
             'token' => fake()->linuxPlatformToken,
             'user_id' => User::doesntHave('telegramAccounts')->first()?->id,
-            'status' => function() {
+            'status' => function () {
                 $values = StatusEnum::valuesList();
                 return $values[array_rand($values)];
             },

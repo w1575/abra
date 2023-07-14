@@ -20,13 +20,8 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link align-middle px-0">
+            <a href="{{ route('c.s.index') }}" class="nav-link align-middle px-0">
                 <span class="ms-1 d-none d-sm-inline"> {{ __('sidebar.clouds') }} </span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link align-middle px-0">
-                <span class="ms-1 d-none d-sm-inline"> {{ __('sidebar.cloud_accounts') }} </span>
             </a>
         </li>
         <li class="nav-item">
