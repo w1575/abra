@@ -2,32 +2,60 @@
     <table class="table table-primary table-responsive">
         <tr>
             <td>
-                {{ __('bot_tokens.token') }}
+                {{ __('cloud-storage.id') }}
             </td>
             <td>
-                {{ __('bot_tokens.telegram_account') }}
+                {{ __('cloud-storage.name') }}
             </td>
             <td>
-                {{ __('bot_tokens.created_at') }}
+                {{ __('cloud-storage.access_config') }}
+            </td>
+            <td>
+                {{ __('cloud-storage.storage_settings') }}
+            </td>
+            <td>
+                {{ __('common.created_at') }}
+            </td>
+            <td>
+                {{ __('common.updated_at') }}
             </td>
         </tr>
 
-        <?php /** @var \App\Models\BotToken[]|\Illuminate\Database\Eloquent\Collection $tokens */ ?>
-        @foreach($tokens as $token)
+        <?php /** @var \App\Models\CloudStorage[]|\Illuminate\Database\Eloquent\Collection $cloudStorages */ ?>
+        @foreach($cloudStorages as $cloudStorage)
             <tr>
                 <td>
-                    {{ $token->token }}
+                    {{ $cloudStorage->id }}
                 </td>
                 <td>
-                    {{ $token->telegramAccount?->name }}
+                    {{ $cloudStorage->name }}
                 </td>
                 <td>
-                    {{$token->created_at }}
+                    {{ !is_null($cloudStorage->access_config) ? __('cloud-storage.data_set') :  __('cloud-storage.data_not_set') }}
                 </td>
+                <td>
+                    @if($cloudStorage->storage_settings !== null)
+                        {{ __('cloud-storage.config.generateFileName') }} :
+                        {{ $cloudStorage->storage_settings->generateFileName ? __('common.true') : __('common.false') }}
+                        <hr class="hr">
+                        {{ __('cloud-storage.config.overwrite') }} :
+                        {{ $cloudStorage->storage_settings->overwrite ? __('common.true') : __('common.false') }}
+                        <hr class="hr">
+                        {{ __('cloud-storage.config.lengthOfGeneratedName') }} : {{ (string)$cloudStorage->storage_settings->lengthOfGeneratedName }}
+                    @else
+                        {{ __('cloud-storage.data_not_set') }}
+                    @endif
+                </td>
+                <td>
+                    {{ $cloudStorage->created_at }}
+                </td>
+                <td>
+                    {{ $cloudStorage->updated_at }}
+                </td>
+
             </tr>
         @endforeach
-
-        {{ $tokens->links() }}
-
     </table>
+
+    {{ $cloudStorages->links() }}
 </div>

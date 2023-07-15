@@ -15,7 +15,7 @@ class Index extends Component
 
     public function render(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $cloudStorages = CloudStorage::query()->paginate();
+        $cloudStorages = CloudStorage::query()->latest()->paginate();
         return view('livewire.cloud-storage.index', ['cloudStorages' => $cloudStorages]);
     }
 }

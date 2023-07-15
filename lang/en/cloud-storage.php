@@ -3,6 +3,16 @@
 return [
     'id' => 'ID',
     'name' => 'Name',
-    'storage_access' => 'Access',
+    'access_config' => 'Access',
     'storage_settings' => 'Settings',
+    'storage_type' => 'Storage type',
+
+    'data_set' => 'Data set',
+    'data_not_set' => 'Data     not set',
+
+    'config' => [
+        'generateFileName' => 'Generate file name',
+        'overwrite' => 'Overwrite',
+        'lengthOfGeneratedName' => 'Length of generated name',
+    ],
 ];

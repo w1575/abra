@@ -4,8 +4,9 @@ namespace Database\Factories;
 
 use App\Enums\Storages\StorageTypeEnum;
 use App\Models\TelegramAccount;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CloudStorage>
@@ -23,8 +24,12 @@ class CloudStorageFactory extends Factory
             'name' => fake()->name,
             'telegram_account_id' => (new TelegramAccount())->firstOrFail()?->id,
             'storage_type' => StorageTypeEnum::YandexDisk->value,
-            'storage_settings' => null,
-            'storage_config' => null,
+            'access_config' => json_encode(['token' => Crypt::encrypt(Str::random(32))]),
+            'storage_settings' => json_encode([
+                'generateFileName' => rand(true, false),
+                'overwrite' => rand(true, false),
+                'lengthOfGeneratedName' => rand(10, 32),
+            ]),
         ];
     }
 }

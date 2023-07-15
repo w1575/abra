@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Data\Storages\Settings\StorageSettingsData;
 use Database\Factories\CloudStorageFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,8 +21,8 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property int $telegram_account_id
  * @property string $storage_type
- * @property mixed|null $storage_settings
- * @property mixed|null $storage_config
+ * @property mixed|StorageSettingsData|null $storage_settings
+ * @property string|null $access_config
  * @method static CloudStorageFactory factory($count = null, $state = [])
  * @method static Builder|CloudStorage newModelQuery()
  * @method static Builder|CloudStorage newQuery()
@@ -51,5 +53,11 @@ class CloudStorage extends Model
         return $this->belongsTo(TelegramAccount::class);
     }
 
-
+    protected function storageSettings(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => $value !== null ? StorageSettingsData::from($value) : null,
+            set: fn (?StorageSettingsData $value) => $value !== null ? json_encode($value) : null
+        );
+    }
 }
