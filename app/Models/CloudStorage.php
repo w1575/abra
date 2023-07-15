@@ -35,8 +35,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|CloudStorage whereStorageType($value)
  * @method static Builder|CloudStorage whereUpdatedAt($value)
  * @method static Builder|CloudStorage whereUserId($value)
- * @mixin Eloquent
  * @property-read TelegramAccount $telegramAccount
+ * @method static Builder|CloudStorage whereAccessConfig($value)
+ * @method static Builder|CloudStorage whereTelegramAccountId($value)
+ * @mixin Eloquent
  */
 class CloudStorage extends Model
 {
@@ -57,7 +59,6 @@ class CloudStorage extends Model
     {
         return Attribute::make(
             get: fn (?string $value) => $value !== null ? StorageSettingsData::from($value) : null,
-            set: fn (?StorageSettingsData $value) => $value !== null ? json_encode($value) : null
         );
     }
 }

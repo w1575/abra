@@ -29,6 +29,8 @@ class CloudStorageFactory extends Factory
                 'generateFileName' => rand(true, false),
                 'overwrite' => rand(true, false),
                 'lengthOfGeneratedName' => rand(10, 32),
+                'folder' => '/abra/',
+                'subFolderBasedOnType' => rand(true, false),
             ]),
         ];
     }

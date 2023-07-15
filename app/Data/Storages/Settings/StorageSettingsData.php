@@ -10,6 +10,8 @@ class StorageSettingsData extends Data
         public bool $generateFileName = false,
         public bool $overwrite = false,
         public int $lengthOfGeneratedName = 32,
+        public string $folder = "/abra/",
+        public bool $subFolderBasedOnType = false,
     ) {
 
     }

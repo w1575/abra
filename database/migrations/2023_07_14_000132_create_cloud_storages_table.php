@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name');
             $table->foreignIdFor(TelegramAccount::class)->constrained();
-            $table->enum('storage_type', StorageTypeEnum::valuesList());
+            $table->enum('storage_type', StorageTypeEnum::valuesList())->nullable();
             $table->json('storage_settings')->nullable()->comment('Work settings');
             $table->json('access_config')->nullable()->comment('Api access config');
         });

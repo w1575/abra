@@ -3,8 +3,10 @@
 /** @var SergiX44\Nutgram\Nutgram $bot */
 
 use App\Telegram\Commands\TestCommand;
+use App\Telegram\Conversations\AddCloudStorageConversation;
 use App\Telegram\Conversations\StartConversation;
 use App\Telegram\Middleware\CheckUserStatusMiddleware;
+use SergiX44\Nutgram\Nutgram;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +18,16 @@ use App\Telegram\Middleware\CheckUserStatusMiddleware;
 |
 */
 
-$bot->onCommand('start', StartConversation::class)->description('Who r u?');
+$bot->onCommand('start', StartConversation::class)->description('Init new user');
 
-$bot->registerCommand(TestCommand::class)->middleware(CheckUserStatusMiddleware::class);
+$bot->group(function(Nutgram $bot) {
+    $bot->registerCommand(TestCommand::class);
+    $bot
+        ->onCommand('add_storage', AddCloudStorageConversation::class)
+        ->description('Add new cloud storage')
+    ;
+
+})->middleware(CheckUserStatusMiddleware::class);
+
 
 require __DIR__ . '/telegram/files-handlers.php';

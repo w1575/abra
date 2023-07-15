@@ -48,6 +48,9 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read Collection<int, TelegramAccount> $telegramAccounts
  * @property-read int|null $telegram_accounts_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
+ * @property-read DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read Collection<int, \App\Models\TelegramAccount> $telegramAccounts
+ * @property-read Collection<int, PersonalAccessToken> $tokens
  * @mixin \Eloquent
  */
 class User extends Authenticatable

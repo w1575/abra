@@ -35,13 +35,38 @@
                 </td>
                 <td>
                     @if($cloudStorage->storage_settings !== null)
-                        {{ __('cloud-storage.config.generateFileName') }} :
-                        {{ $cloudStorage->storage_settings->generateFileName ? __('common.true') : __('common.false') }}
-                        <hr class="hr">
-                        {{ __('cloud-storage.config.overwrite') }} :
-                        {{ $cloudStorage->storage_settings->overwrite ? __('common.true') : __('common.false') }}
-                        <hr class="hr">
-                        {{ __('cloud-storage.config.lengthOfGeneratedName') }} : {{ (string)$cloudStorage->storage_settings->lengthOfGeneratedName }}
+                    <table ckass="table">
+                        <tr>
+                            <td>
+                                {{ __('cloud-storage.config.generateFileName') }} :
+                                {{ $cloudStorage->storage_settings->generateFileName ? __('common.true') : __('common.false') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ __('cloud-storage.config.overwrite') }} :
+                                {{ $cloudStorage->storage_settings->overwrite ? __('common.true') : __('common.false') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ __('cloud-storage.config.lengthOfGeneratedName') }}
+                                : {{ (string)$cloudStorage->storage_settings->lengthOfGeneratedName }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ __('cloud-storage.config.folder') }}
+                                : {{ (string)$cloudStorage->storage_settings->lengthOfGeneratedName }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ __('cloud-storage.config.subFolderBasedOnType') }}
+                                : {{ (string)$cloudStorage->storage_settings->lengthOfGeneratedName }}
+                            </td>
+                        </tr>
+                    </table>
                     @else
                         {{ __('cloud-storage.data_not_set') }}
                     @endif
