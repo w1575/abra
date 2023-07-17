@@ -8,4 +8,7 @@ return [
     'false' => 'False',
 
     'create' => 'Create',
+    'data_not_found' => 'Data not found',
+
+    'success' => 'Success',
 ];

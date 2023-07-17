@@ -38,6 +38,7 @@ use Illuminate\Support\Carbon;
  * @property-read TelegramAccount $telegramAccount
  * @method static Builder|CloudStorage whereAccessConfig($value)
  * @method static Builder|CloudStorage whereTelegramAccountId($value)
+ * @method static Builder|CloudStorage whereTelegramId(int $id)
  * @mixin Eloquent
  */
 class CloudStorage extends Model
@@ -60,5 +61,16 @@ class CloudStorage extends Model
         return Attribute::make(
             get: fn (?string $value) => $value !== null ? StorageSettingsData::from($value) : null,
         );
+    }
+
+    public function scopeWhereTelegramId(Builder $builder, int $id): void
+    {
+        $builder->leftJoin(
+            'telegram_accounts',
+            'cloud_storages.telegram_account_id',
+            '=',
+            'telegram_accounts.id'
+        );
+        $builder->where('telegram_accounts.telegram_id', $id);
     }
 }

@@ -8,4 +8,5 @@ return [
 
     'create' => 'Create',
     'not_found' => 'Token not found.',
+    'short_token' => 'Invalid token: too short'
 ];

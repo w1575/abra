@@ -66,9 +66,8 @@ class StartConversation extends Conversation
         $token = $bot->message()->text;
         try {
             $this->validateToken($token);
-        } catch (Exception $e) {
+        } catch (Exception $e) {;
             $bot->sendMessage($e->getMessage() . PHP_EOL . __('telegram.start_command.try_again'));
-            $this->next('setToken');
             return;
         }
         $this->createTelegramUser($bot->user(), $token);
@@ -86,12 +85,17 @@ class StartConversation extends Conversation
      */
     private function validateToken(?string $token): void
     {
-        BotToken::whereToken($token)->firstOr(callback: fn() => new Exception(__('bot_tokens.not_found')));
+        $token = ltrim($token);
+        if (mb_strlen($token) < 32) {
+            throw new \Exception(__('bot_tokens.short_token'));
+        }
+        BotToken::whereToken($token)->firstOr(callback: fn () => throw new Exception(__('bot_tokens.not_found')));
     }
 
     protected function createTelegramUser(?User $user, ?string $token): void
     {
         $name = $user->first_name . $user->last_name;
+
         TelegramAccount::make([
             'telegram_id' => $user->id,
             'username' => $user->username ?? 'UserId' . $user->id,
@@ -101,6 +105,7 @@ class StartConversation extends Conversation
             'user_id' => null,
             'status' => StatusEnum::Active->value,
         ])->save();
+
         BotToken::whereToken($token)->delete();
     }
 }

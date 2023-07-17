@@ -8,4 +8,6 @@ return [
     'false' => 'Нет',
 
     'create' => 'Добавить',
+    'data_not_found' => 'Данные не найдены',
+    'success' => 'Успех',
 ];
