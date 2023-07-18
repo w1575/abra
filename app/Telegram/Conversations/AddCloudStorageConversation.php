@@ -73,7 +73,7 @@ class AddCloudStorageConversation extends Conversation
         $index = (int) $bot->message()->text - 1;
         $storageType = StorageTypeEnum::valuesList()[$index] ?? null;
         if ($storageType === null) {
-            $bot->sendMessage(__('cloud_storage.bot.storage_type_not_found'));
+            $bot->sendMessage(__('cloud-storage.bot.storage_type_not_found'));
             return;
         }
 

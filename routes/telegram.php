@@ -7,6 +7,8 @@ use App\Telegram\Commands\StorageListCommand;
 use App\Telegram\Commands\TestCommand;
 use App\Telegram\Conversations\AddCloudStorageConversation;
 use App\Telegram\Conversations\DeleteStorageConversation;
+use App\Telegram\Conversations\SetLanguageConversation;
+use App\Telegram\Conversations\SetTokenConversation;
 use App\Telegram\Conversations\StartConversation;
 use App\Telegram\Middleware\CheckUserStatusMiddleware;
 use SergiX44\Nutgram\Nutgram;
@@ -21,11 +23,9 @@ use SergiX44\Nutgram\Nutgram;
 |
 */
 
-$bot->onCommand('start', StartConversation::class)->description('Init new user');
+require __DIR__ . "/telegram/common.php";
 
-$bot->group(function(Nutgram $bot) {
-    $bot->registerCommand(TestCommand::class);
-
+$bot->group(function (Nutgram $bot) {
     $bot
         ->onCommand('add_storage', AddCloudStorageConversation::class)
         ->description('Add new cloud storage')
@@ -33,10 +33,8 @@ $bot->group(function(Nutgram $bot) {
 
     $bot
         ->onCommand('delete_storage', DeleteStorageConversation::class)
-        ->description('Удалить хранилище. Delte storage.')
+        ->description('Удалить хранилище. Delete storage.')
     ;
-
-    $bot->registerCommand(StorageListCommand::class);
 
 })->middleware(CheckUserStatusMiddleware::class);
 

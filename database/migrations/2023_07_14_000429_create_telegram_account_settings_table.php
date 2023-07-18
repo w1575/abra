@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\CloudStorage;
+use App\Models\TelegramAccount;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->enum('locale', ['ru', 'en'])->nullable();
             $table->foreignIdFor(CloudStorage::class)->nullable()->constrained();
+            $table->foreignIdFor(TelegramAccount::class)->nullable()->constrained();
         });
     }
 

@@ -5,6 +5,7 @@ namespace App\Telegram\Conversations;
 use App\Enums\TelegramAccount\StatusEnum;
 use App\Models\BotToken;
 use App\Models\TelegramAccount;
+use App\Models\TelegramAccountSettings;
 use Exception;
 use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Conversations\Conversation;
@@ -13,99 +14,44 @@ use SergiX44\Nutgram\Telegram\Types\User\User;
 
 class StartConversation extends Conversation
 {
-    protected function getLocaleKeys(): array
-    {
-        return array_keys(config('app.locales'));
-    }
-    protected function getLocales(): array|string
-    {
-        return implode(PHP_EOL, array_map(
-            fn (string $v, string $k) => sprintf("%s => '%s'", $k, $v),
-            config('app.locales'),
-            $this->getLocaleKeys(),
-        ));
-
-    }
-
     /**
      * @throws InvalidArgumentException
      */
     public function start(Nutgram $bot): void
     {
-        $message = 'Привет! Сначала нужно настроить язык.' .  PHP_EOL;
-        $message .= '(Hello! First you need to set the language)' . PHP_EOL;
-        $message .=  $this->getLocales();
-        $message .= 'Например, если отправишь "en", в качестве языка будет установлен Английский.';
-        $message .= '(For example, if you send "en", the language will be set to English)';
+        $message = "Привет! По-умолчанию язык системы - русский. Ты можешь изменить его ";
+        $message .= "отправив команду /set_language";
+
+        $message .= PHP_EOL . "Для работы системы необходимо установить код приглашения. Команда /set_token";
+
         $bot->sendMessage($message);
-        $this->next('setLanguage');
-    }
 
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function setLanguage(Nutgram $bot): void
-    {
-        $locale = mb_convert_case($bot->message()->text, MB_CASE_LOWER, 'UTF-8');
-        if (!in_array($locale, $this->getLocaleKeys())) {
-            $bot->sendMessage('Выбран неверный язык (Invalid language selected).');
-            $this->next('setLanguage');
-            return;
-        }
+        $message = PHP_EOL . "Hello! By default, the system language is Russian. You can change it";
+        $message .= " by sending a command /set_language";
+        $message .= PHP_EOL . "For the system to work, you need to set the invitation code. Command /set_token";
+        $bot->sendMessage($message);
 
-        $this->setLocale();
-        $bot->sendMessage(__('telegram.start_command.need_set_the_token'));
-        $this->next('setToken');
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function setToken(Nutgram $bot): void
-    {
-        $token = $bot->message()->text;
-        try {
-            $this->validateToken($token);
-        } catch (Exception $e) {;
-            $bot->sendMessage($e->getMessage() . PHP_EOL . __('telegram.start_command.try_again'));
-            return;
-        }
-        $this->createTelegramUser($bot->user(), $token);
-        $bot->sendMessage(__('telegram.start_command.token_set'));
+        $this->createUser($bot->user());
         $this->end();
     }
 
-    private function setLocale(): void
-    {
-        // TODO: set locale in db
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function validateToken(?string $token): void
-    {
-        $token = ltrim($token);
-        if (mb_strlen($token) < 32) {
-            throw new \Exception(__('bot_tokens.short_token'));
-        }
-        BotToken::whereToken($token)->firstOr(callback: fn () => throw new Exception(__('bot_tokens.not_found')));
-    }
-
-    protected function createTelegramUser(?User $user, ?string $token): void
+    protected function createUser(User $user): void
     {
         $name = $user->first_name . $user->last_name;
 
-        TelegramAccount::make([
+        $account = TelegramAccount::firstOrCreate([
             'telegram_id' => $user->id,
             'username' => $user->username ?? 'UserId' . $user->id,
             'name' => empty($name) ? 'UserId' . $user->id : $name,
             'avatar' => '',
-            'token' => $token,
+            'token' => null,
             'user_id' => null,
             'status' => StatusEnum::Active->value,
-        ])->save();
+        ]);
 
-        BotToken::whereToken($token)->delete();
+        TelegramAccountSettings::create([
+            'telegram_account_id' => $account->id,
+            'locale' => 'ru',
+        ]);
     }
 }

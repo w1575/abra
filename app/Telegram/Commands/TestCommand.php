@@ -13,6 +13,6 @@ class TestCommand extends Command
 
     public function handle(Nutgram $bot): void
     {
-        $bot->sendMessage("Your chat_id => {$bot->chatId()}");
+        $bot->sendMessage("Your chat_id => {$bot->chatId()}. " . app()->getLocale());
     }
 }
