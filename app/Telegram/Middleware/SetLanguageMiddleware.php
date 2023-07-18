@@ -11,7 +11,9 @@ class SetLanguageMiddleware
     {
         $settings = TelegramAccountSettings::whereRelation(
             'telegramAccount',
-            'telegram_id', '=', $bot->user()->id
+            'telegram_id',
+            '=',
+            $bot->user()->id
         )->first();
 
         if ($settings === null) {

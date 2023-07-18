@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -38,6 +40,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|TelegramAccount whereUserId($value)
  * @method static Builder|TelegramAccount whereUsername($value)
  * @property-read User|null $user
+ * @property-read \App\Models\TelegramAccountSettings|null $telegramAccountSettings
+ * @property-read \Illuminate\Database\Eloquent\Collection|CloudStorage|null $cloudStorages
+ * @property-read int|null $cloud_storages_count
  * @mixin Eloquent
  */
 class TelegramAccount extends Model
@@ -56,5 +61,15 @@ class TelegramAccount extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function telegramAccountSettings(): HasOne
+    {
+        return $this->hasOne(TelegramAccountSettings::class);
+    }
+
+    public function cloudStorages(): HasMany
+    {
+        return $this->hasMany(CloudStorage::class);
     }
 }

@@ -33,7 +33,7 @@ interface StorageContract
 
     /**
      * @param  UploadFileData  $uploadFileData
-     * @return FileInfoData
+     * @return FileInfoData|null
      */
     public function uploadFile(UploadFileData $uploadFileData): ?FileInfoData;
 

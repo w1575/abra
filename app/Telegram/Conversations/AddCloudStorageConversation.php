@@ -7,6 +7,7 @@ use App\Data\Storages\Settings\StorageSettingsData;
 use App\Enums\Storages\StorageTypeEnum;
 use App\Models\CloudStorage;
 use App\Models\TelegramAccount;
+use App\Models\TelegramAccountSettings;
 use Illuminate\Support\Facades\Crypt;
 use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Conversations\Conversation;
@@ -98,6 +99,9 @@ class AddCloudStorageConversation extends Conversation
         }
         $this->setAccessConfig($storage, $message);
         $bot->sendMessage(__('cloud-storage.bot.end_add_conversation'));
+
+        $this->setUserDefaultStorage($storage, $bot->user()->id);
+
         $this->end();
     }
 
@@ -111,5 +115,17 @@ class AddCloudStorageConversation extends Conversation
         $encrypted = Crypt::encrypt($message);
         $storage->access_config = (new YandexDiskAccessConfigData($encrypted))->toJson();
         $storage->save();
+    }
+
+    protected function setUserDefaultStorage(?CloudStorage $storage, int $id): void
+    {
+        TelegramAccountSettings::whereRelation(
+            'telegramAccount',
+            'telegram_id',
+            '=',
+            $id
+        )->update([
+            'cloud_storage_id' => $storage->id,
+        ]);
     }
 }

@@ -1,11 +1,15 @@
 <?php
 
-use App\Telegram\Handlers;
-use App\Telegram\Middleware\CheckUserStatusMiddleware;
-
 /** @var SergiX44\Nutgram\Nutgram $bot */
 
-$bot->group(function (\SergiX44\Nutgram\Nutgram $bot) {
+use App\Telegram\Handlers;
+use App\Telegram\Middleware\CheckUserStatusMiddleware;
+use App\Telegram\Middleware\SetLanguageMiddleware;
+use SergiX44\Nutgram\Nutgram;
+
+
+$bot->group(function (Nutgram $bot) {
+
     $bot->onMessage(Handlers\OnMessageHandler::class);
 
     $bot->onPhoto(Handlers\PhotoHandler::class);
@@ -21,4 +25,5 @@ $bot->group(function (\SergiX44\Nutgram\Nutgram $bot) {
     $bot->onSticker(Handlers\StickerHandler::class);
 
     $bot->onVideoNote(Handlers\VideoNoteHandler::class);
-})->middleware(CheckUserStatusMiddleware::class);
+
+})->middleware(CheckUserStatusMiddleware::class)->middleware(SetLanguageMiddleware::class);

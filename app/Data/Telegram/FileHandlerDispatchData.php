@@ -12,5 +12,7 @@ class FileHandlerDispatchData extends Data
         public int $fileId,
         public FileTypeEnum $fileType,
         public StorageContract $storage,
-    ) {}
+    ) {
+
+    }
 }

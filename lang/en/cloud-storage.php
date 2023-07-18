@@ -32,5 +32,8 @@ return [
 
         'choice_storage' => 'Select storage.',
         'wrong_storage' => 'Storage not found or access denied',
+
+        'set_default_start' => 'Enter the ID of the vault you want to use by default.',
+        'no_storages' => 'You have no storages',
     ],
 ];

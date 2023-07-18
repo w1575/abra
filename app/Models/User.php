@@ -4,11 +4,13 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -26,9 +28,11 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read DatabaseNotificationCollection <int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read DatabaseNotificationCollection|int|DatabaseNotification $notifications
  * @property-read int|null $notifications_count
- * @property-read Collection <int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read Collection|int|TelegramAccount $telegramAccounts
+ * @property-read int|null $telegram_accounts_count
+ * @property-read Collection|int|PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @method static UserFactory factory($count = null, $state = [])
  * @method static Builder|User newModelQuery()
@@ -42,29 +46,13 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static Builder|User wherePassword($value)
  * @method static Builder|User whereRememberToken($value)
  * @method static Builder|User whereUpdatedAt($value)
- * @property-read DatabaseNotificationCollection <int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read Collection <int, \Laravel\Sanctum\PersonalAccessToken> $tokens
- * @property-read DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read Collection<int, TelegramAccount> $telegramAccounts
- * @property-read int|null $telegram_accounts_count
- * @property-read Collection<int, PersonalAccessToken> $tokens
- * @property-read DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read Collection<int, \App\Models\TelegramAccount> $telegramAccounts
- * @property-read Collection<int, PersonalAccessToken> $tokens
- * @property-read DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read Collection<int, \App\Models\TelegramAccount> $telegramAccounts
- * @property-read Collection<int, PersonalAccessToken> $tokens
- * @property-read DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read Collection<int, \App\Models\TelegramAccount> $telegramAccounts
- * @property-read Collection<int, PersonalAccessToken> $tokens
- * @property-read DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read Collection<int, \App\Models\TelegramAccount> $telegramAccounts
- * @property-read Collection<int, PersonalAccessToken> $tokens
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

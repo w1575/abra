@@ -15,17 +15,20 @@ class CheckUserStatusMiddleware
      */
     public function __invoke(Nutgram $bot, $next): void
     {
-        $userExist = $this->validateUser($bot->user());
-        if (!$userExist) {
+        $telegramAccount = $this->getTelegramAccount($bot->user());
+        if ($telegramAccount === null) {
             $bot->sendMessage(__('bot-response.access.user_not_found'));
             return;
         }
+
+        $bot->set('telegramAccount', $telegramAccount);
+
         $next($bot);
     }
 
 
-    protected function validateUser(?User $user): bool
+    protected function getTelegramAccount(?User $user): ?TelegramAccount
     {
-        return TelegramAccount::whereTelegramId($user->id)->exists();
+        return TelegramAccount::whereTelegramId($user->id)->whereNotNull('token')->first();
     }
 }
