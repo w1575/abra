@@ -5,7 +5,7 @@ return [
     'telegram_accounts' => 'Bot Accounts',
     'clouds' => 'Cloud storages',
     'cloud_accounts' => 'Cloud Accounts',
-    'files' => 'Files',
+    'files' => 'Response',
     'user_settings' => 'User settings',
     'bot_tokens' => 'Invite codes',
 ];

@@ -4,21 +4,26 @@ namespace App\Telegram\Conversations;
 
 use App\Models\TelegramAccountSettings;
 use Psr\SimpleCache\InvalidArgumentException;
-use SergiX44\Nutgram\Conversations\Conversation;
+use SergiX44\Nutgram\Conversations\InlineMenu;
 use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 
-class SetLanguageConversation extends Conversation
+class SetLanguageConversation extends InlineMenu
 {
     /**
      * @throws InvalidArgumentException
      */
     public function start(Nutgram $bot): void
     {
-        $message =  $this->getLocales();
-        $message .=  PHP_EOL . 'Например, если отправишь "en", в качестве языка будет установлен Английский.';
-        $message .= '(For example, if you send "en", the language will be set to English)';
-        $bot->sendMessage($message);
-        $this->next('setLanguage');
+        $message =  'Выберите язык. ';
+        $message .= PHP_EOL . 'Choice language.';
+
+        $this->menuText($message)
+            ->addButtonRow(InlineKeyboardButton::make('Русский', callback_data: 'ru@setLanguage'))
+            ->addButtonRow(InlineKeyboardButton::make('English', callback_data: 'en@setLanguage'))
+            ->orNext('none')
+            ->showMenu()
+        ;
     }
 
     /**
@@ -26,13 +31,21 @@ class SetLanguageConversation extends Conversation
      */
     public function setLanguage(Nutgram $bot): void
     {
-        $locale = mb_convert_case($bot->message()->text, MB_CASE_LOWER, 'UTF-8');
+        $locale = $bot->callbackQuery()->data;
         if (!in_array($locale, $this->getLocaleKeys())) {
             $bot->sendMessage('Выбран неверный язык (Invalid language selected).');
             return;
         }
 
-        $this->setLocale($bot->user()?->id, $locale);
+        TelegramAccountSettings::whereRelation(
+            'telegramAccount',
+            'telegram_id',
+            '=',
+            $bot->userId(),
+        )->update([
+            'locale' => $locale,
+        ]);
+
         app()->setLocale($locale);
 
         $bot->sendMessage(__('telegram.language_been_set'));
@@ -54,15 +67,12 @@ class SetLanguageConversation extends Conversation
         ));
     }
 
-    protected function setLocale(?int $id, array|bool|string|null $locale): void
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function none(Nutgram $bot): void
     {
-        $settings = TelegramAccountSettings::query()
-            ->whereRelation('telegramAccount', 'telegram_id', $id)
-            ->first()
-        ;
-
-        $settings->update([
-            'locale' => $locale
-        ]);
+        $bot->sendMessage('ok');
+        $this->end();
     }
 }

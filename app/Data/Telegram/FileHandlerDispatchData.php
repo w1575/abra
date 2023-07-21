@@ -10,8 +10,7 @@ class FileHandlerDispatchData extends Data
 {
     public function __construct(
         public int $fileId,
-        public FileTypeEnum $fileType,
-        public StorageContract $storage,
+        public int $telegramUserId,
     ) {
 
     }

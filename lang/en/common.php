@@ -11,4 +11,9 @@ return [
     'data_not_found' => 'Data not found',
 
     'success' => 'Success',
+
+    'edit' => 'Edit',
+    'new_name' => 'New Name',
+
+    'back' => 'Назад',
 ];

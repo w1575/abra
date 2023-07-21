@@ -73,4 +73,11 @@ class CloudStorage extends Model
         );
         $builder->where('telegram_accounts.telegram_id', $id);
     }
+
+    public function getIsDefault(): bool
+    {
+        return TelegramAccountSettings::whereTelegramAccountId($this->telegram_account_id)
+                ->first()?->cloud_storage_id == $this->id
+        ;
+    }
 }

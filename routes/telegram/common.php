@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\TelegramAccountSettings;
 use App\Telegram\Commands\TestCommand;
 use App\Telegram\Conversations\SetLanguageConversation;
 use App\Telegram\Conversations\SetTokenConversation;
@@ -26,4 +27,5 @@ $bot->group(function (Nutgram $bot) {
         ->onCommand('set_token', SetTokenConversation::class)
         ->description('Установка кода приглашения. Setting the invitation code.')
     ;
+
 })->middleware(SetLanguageMiddleware::class);

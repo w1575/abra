@@ -8,7 +8,7 @@ return [
     'storage_type' => 'Storage type',
 
     'data_set' => 'Data set',
-    'data_not_set' => 'Data     not set',
+    'data_not_set' => 'Data not set',
 
     'config' => [
         'generateFileName' => 'Generate file name',

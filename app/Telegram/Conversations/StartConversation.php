@@ -8,48 +8,44 @@ use App\Models\TelegramAccount;
 use App\Models\TelegramAccountSettings;
 use Exception;
 use Psr\SimpleCache\InvalidArgumentException;
-use SergiX44\Nutgram\Conversations\Conversation;
+use SergiX44\Nutgram\Conversations\InlineMenu;
+use SergiX44\Nutgram\Handlers\Type\Command;
 use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\User\User;
 
-class StartConversation extends Conversation
+class StartConversation extends Command
 {
     /**
-     * @throws InvalidArgumentException
      */
-    public function start(Nutgram $bot): void
+    public function handle(Nutgram $bot): void
     {
-        $message = "Привет! По-умолчанию язык системы - русский. Ты можешь изменить его ";
-        $message .= "отправив команду /set_language";
-
-        $message .= PHP_EOL . "Для работы системы необходимо установить код приглашения. Команда /set_token";
-
+        $message = "Привет! По-умолчанию язык системы - русский. Ты можешь изменить его: /set_language";
+        $message .= PHP_EOL . "Hello! By default, the system language is Russian. You can change it: /set_language";
         $bot->sendMessage($message);
-
-        $message = PHP_EOL . "Hello! By default, the system language is Russian. You can change it";
-        $message .= " by sending a command /set_language";
-        $message .= PHP_EOL . "For the system to work, you need to set the invitation code. Command /set_token";
-        $bot->sendMessage($message);
-
         $this->createUser($bot->user());
-        $this->end();
+
     }
 
     protected function createUser(User $user): void
     {
         $name = $user->first_name . $user->last_name;
 
-        $account = TelegramAccount::firstOrCreate([
-            'telegram_id' => $user->id,
-            'username' => $user->username ?? 'UserId' . $user->id,
-            'name' => empty($name) ? 'UserId' . $user->id : $name,
-            'avatar' => '',
-            'token' => null,
-            'user_id' => null,
-            'status' => StatusEnum::Active->value,
-        ]);
+        /** @var TelegramAccount $account */
+        $account = TelegramAccount::whereTelegramId($user->id)->first();
 
-        TelegramAccountSettings::create([
+        if ($account === null) {
+            $account = TelegramAccount::create([
+                'telegram_id' => $user->id,
+                'username' => $user->username ?? 'UserId' . $user->id,
+                'name' => empty($name) ? 'UserId' . $user->id : $name,
+                'avatar' => null,
+                'token' => null,
+                'user_id' => null,
+            ]);
+        }
+
+        TelegramAccountSettings::firstOrCreate([
             'telegram_account_id' => $account->id,
             'locale' => 'ru',
         ]);

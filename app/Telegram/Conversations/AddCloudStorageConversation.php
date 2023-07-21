@@ -11,10 +11,12 @@ use App\Models\TelegramAccountSettings;
 use Illuminate\Support\Facades\Crypt;
 use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Conversations\Conversation;
+use SergiX44\Nutgram\Conversations\InlineMenu;
 use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\User\User;
 
-class AddCloudStorageConversation extends Conversation
+class AddCloudStorageConversation extends InlineMenu
 {
     protected function getUserLatestStorage(User $user): CloudStorage|null
     {
@@ -40,6 +42,9 @@ class AddCloudStorageConversation extends Conversation
     public function enterName(Nutgram $bot): void
     {
         $name = $bot->message()?->text ?? ' ';
+
+        $name = $this->clearName($name);
+
         if (empty($name) or mb_strlen($name) < 3) {
             $bot->sendMessage('cloud-storage.bot.invalid_name');
         } else {
@@ -49,38 +54,53 @@ class AddCloudStorageConversation extends Conversation
                 'telegram_account_id' => $telegramAccountId,
                 'storage_settings' => (new StorageSettingsData())->toJson(),
             ]);
-            $bot->sendMessage(__('cloud-storage.bot.enter_storage_type'));
-            $bot->sendMessage($this->getStorageList());
-            $this->next('enterStorageType');
+
+            $menu = $this->menuText(__('cloud-storage.bot.enter_storage_type'));
+            foreach (StorageTypeEnum::valuesList() as $storage) {
+                $menu->addButtonRow(InlineKeyboardButton::make($storage, callback_data: "{$storage}@setStorageType"));
+            }
+            $menu->showMenu();
         }
     }
 
-    protected function getStorageList(): string
-    {
-        $index = 0;
-        $processItem = function(string $carry, $item) use ($index) {
-            $index ++;
-            return $carry . PHP_EOL . "{$index} : {$item}";
-        };
-
-        return array_reduce(StorageTypeEnum::valuesList(), $processItem, '');
-    }
+//    protected function getStorageList(): string
+//    {
+//        $index = 0;
+//        $processItem = function(string $carry, $item) use ($index) {
+//            $index ++;
+//            return $carry . PHP_EOL . "{$index} : {$item}";
+//        };
+//
+//        return array_reduce(StorageTypeEnum::valuesList(), $processItem, '');
+//    }
 
     /**
      * @throws InvalidArgumentException
      */
-    public function enterStorageType(Nutgram $bot): void
-    {
-        $index = (int) $bot->message()->text - 1;
-        $storageType = StorageTypeEnum::valuesList()[$index] ?? null;
-        if ($storageType === null) {
-            $bot->sendMessage(__('cloud-storage.bot.storage_type_not_found'));
-            return;
-        }
+//    public function enterStorageType(Nutgram $bot): void
+//    {
+//        $index = (int) $bot->message()->text - 1;
+//        $storageType = StorageTypeEnum::valuesList()[$index] ?? null;
+//        if ($storageType === null) {
+//            $bot->sendMessage(__('cloud-storage.bot.storage_type_not_found'));
+//            return;
+//        }
+//
+//        $storage = $this->getUserLatestStorage($bot->user());
+//        $storage->update([
+//            'storage_type' => $storageType
+//        ]);
+//        $bot->sendMessage(__('cloud-storage.bot.access_data_needed'));
+//        $bot->sendMessage($this->getStorageInstructionText($storage));
+//        $this->next('setAccessToken');
+//    }
 
+    public function setStorageType(Nutgram $bot): void
+    {
+        $type = $bot->callbackQuery()->data;
         $storage = $this->getUserLatestStorage($bot->user());
         $storage->update([
-            'storage_type' => $storageType
+            'storage_type' => $type
         ]);
         $bot->sendMessage(__('cloud-storage.bot.access_data_needed'));
         $bot->sendMessage($this->getStorageInstructionText($storage));
