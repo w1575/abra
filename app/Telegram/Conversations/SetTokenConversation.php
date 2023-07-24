@@ -20,7 +20,7 @@ class SetTokenConversation extends Conversation
     public function start(Nutgram $bot): void
     {
         $bot->sendMessage(__('telegram.start_command.need_set_the_token'));
-        $this->next('setToken');
+        $this->setSkipMiddlewares(true)->next('setToken');
     }
 
     /**

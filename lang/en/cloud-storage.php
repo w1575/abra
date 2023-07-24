@@ -10,15 +10,17 @@ return [
     'data_set' => 'Data set',
     'data_not_set' => 'Data not set',
 
+    'back_to_storage' => 'Back to storage',
+
     'config' => [
         'generateFileName' => 'Generate file name',
         'overwrite' => 'Overwrite',
         'lengthOfGeneratedName' => 'Length of generated name',
-        'folder' => 'Директория для загрузки',
-        'subFolderBasedOnType' => 'Загружать в подпапку с именем типа файла',
+        'folder' => 'Upload dir',
+        'subFolderBasedOnType' => 'Write to folders based on file type',
 
-        'choice_storage' => 'Выберите хранилище.',
-        'wrong_storage' => 'Хранилище не найдено, либо нет доступа',
+        'choice_storage' => 'Select storage.',
+        'wrong_storage' => 'Storage not found or no access',
     ],
 
     'bot' => [
@@ -35,5 +37,12 @@ return [
 
         'set_default_start' => 'Enter the ID of the vault you want to use by default.',
         'no_storages' => 'You have no storages',
+
+        'select_storage_type' => 'Select storage type',
+        'enter_new_upload_dir' =>  'Please enter the upload folder name. The name must start with \'\\\'. If you type '
+            . '\'\\\' then new files will be uploaded to the root. Current location: :folder',
+        'storage_not_found' => 'Storage not found',
+
+        'name_must_start_with_slash' => 'Name must start with \'\\\'',
     ],
 ];

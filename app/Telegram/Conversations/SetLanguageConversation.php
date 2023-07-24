@@ -18,11 +18,14 @@ class SetLanguageConversation extends InlineMenu
         $message =  'Выберите язык. ';
         $message .= PHP_EOL . 'Choice language.';
 
+        $this->setSkipMiddlewares(true)
+            ->next('ru@setLanguage');
+
         $this->menuText($message)
             ->addButtonRow(InlineKeyboardButton::make('Русский', callback_data: 'ru@setLanguage'))
             ->addButtonRow(InlineKeyboardButton::make('English', callback_data: 'en@setLanguage'))
             ->orNext('none')
-            ->showMenu()
+            ->showMenu(noMiddlewares: true)
         ;
     }
 

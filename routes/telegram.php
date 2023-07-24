@@ -19,6 +19,9 @@ use SergiX44\Nutgram\Nutgram;
 |
 */
 
+$bot->middleware(SetLanguageMiddleware::class);
+$bot->middleware(CheckUserStatusMiddleware::class);
+
 require __DIR__ . "/telegram/common.php";
 
 require __DIR__ . '/telegram/storage.php';

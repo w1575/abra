@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
+use Illuminate\Database\Eloquent\Casts\Json;
+
 /**
  * App\Models\CloudStorage
  *
@@ -60,18 +62,27 @@ class CloudStorage extends Model
     {
         return Attribute::make(
             get: fn (?string $value) => $value !== null ? StorageSettingsData::from($value) : null,
+            set: fn (?StorageSettingsData $value) => $value?->toJson(),
         );
     }
 
     public function scopeWhereTelegramId(Builder $builder, int $id): void
     {
-        $builder->leftJoin(
-            'telegram_accounts',
-            'cloud_storages.telegram_account_id',
+//        $builder->leftJoin(
+//            'telegram_accounts',
+//            'cloud_storages.telegram_account_id',
+//            '=',
+//            'telegram_accounts.id'
+//        );
+
+//        $builder->where('telegram_accounts.telegram_id', $id);
+
+        $builder->whereRelation(
+            'telegramAccount',
+            'telegram_accounts.telegram_id',
             '=',
-            'telegram_accounts.id'
+            $id
         );
-        $builder->where('telegram_accounts.telegram_id', $id);
     }
 
     public function getIsDefault(): bool

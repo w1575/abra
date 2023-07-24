@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('telegram_account_settings', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->enum('locale', ['ru', 'en'])->nullable();
-            $table->foreignIdFor(CloudStorage::class)->nullable()->constrained();
-            $table->foreignIdFor(TelegramAccount::class)->nullable()->constrained();
+            $table->string('locale')->nullable()->comment('Язык системы для пользователя');
+            $table->foreignIdFor(CloudStorage::class)->nullable()->comment('Хранилище по-умолчанию')->constrained()->onDelete('cascade');
+            $table->foreignIdFor(TelegramAccount::class)->nullable()->constrained()->comment('Связанный аккаунт')->onDelete('cascade');
         });
     }
 

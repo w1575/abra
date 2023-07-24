@@ -42,6 +42,7 @@ class StartConversation extends Command
                 'avatar' => null,
                 'token' => null,
                 'user_id' => null,
+                'status' => StatusEnum::Inactive->value,
             ]);
         }
 
