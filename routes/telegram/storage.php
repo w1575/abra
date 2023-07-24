@@ -34,4 +34,4 @@ $bot->group(function (Nutgram $bot) {
     $bot->onCommand('set_default_storage', SetDefaultStorageConversation::class)
         ->description('Хранилище по-умолчанию')
     ;
-})->middleware(CheckUserStatusMiddleware::class)->middleware(SetLanguageMiddleware::class);
+});

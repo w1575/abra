@@ -15,5 +15,5 @@ return [
     'edit' => 'Edit',
     'new_name' => 'New Name',
 
-    'back' => 'Назад',
+    'back' => 'Back',
 ];

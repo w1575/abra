@@ -10,7 +10,6 @@ use App\Models\TelegramAccount;
 use App\Models\TelegramAccountSettings;
 use Illuminate\Support\Facades\Crypt;
 use Psr\SimpleCache\InvalidArgumentException;
-use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Conversations\InlineMenu;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
@@ -52,7 +51,7 @@ class AddCloudStorageConversation extends InlineMenu
             CloudStorage::create([
                 'name' => $name,
                 'telegram_account_id' => $telegramAccountId,
-                'storage_settings' => (new StorageSettingsData())->toJson(),
+                'storage_settings' => new StorageSettingsData(),
             ]);
 
             $menu = $this->menuText(__('cloud-storage.bot.enter_storage_type'));
@@ -62,38 +61,6 @@ class AddCloudStorageConversation extends InlineMenu
             $menu->showMenu();
         }
     }
-
-//    protected function getStorageList(): string
-//    {
-//        $index = 0;
-//        $processItem = function(string $carry, $item) use ($index) {
-//            $index ++;
-//            return $carry . PHP_EOL . "{$index} : {$item}";
-//        };
-//
-//        return array_reduce(StorageTypeEnum::valuesList(), $processItem, '');
-//    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-//    public function enterStorageType(Nutgram $bot): void
-//    {
-//        $index = (int) $bot->message()->text - 1;
-//        $storageType = StorageTypeEnum::valuesList()[$index] ?? null;
-//        if ($storageType === null) {
-//            $bot->sendMessage(__('cloud-storage.bot.storage_type_not_found'));
-//            return;
-//        }
-//
-//        $storage = $this->getUserLatestStorage($bot->user());
-//        $storage->update([
-//            'storage_type' => $storageType
-//        ]);
-//        $bot->sendMessage(__('cloud-storage.bot.access_data_needed'));
-//        $bot->sendMessage($this->getStorageInstructionText($storage));
-//        $this->next('setAccessToken');
-//    }
 
     public function setStorageType(Nutgram $bot): void
     {
