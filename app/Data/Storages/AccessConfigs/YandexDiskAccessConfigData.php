@@ -7,7 +7,7 @@ use Spatie\LaravelData\Data;
 class YandexDiskAccessConfigData extends Data
 {
     public function __construct(
-        public $debugToken,
+        public ?string $debugToken = null,
     ) {
     }
 }

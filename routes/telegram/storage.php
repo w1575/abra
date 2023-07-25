@@ -5,6 +5,7 @@
 use App\Telegram\Commands\ViewStorageCommand;
 use App\Telegram\Conversations\AddCloudStorageConversation;
 use App\Telegram\Conversations\DeleteStorageConversation;
+use App\Telegram\Conversations\EditStorageAccessConversation;
 use App\Telegram\Conversations\SetDefaultStorageConversation;
 use App\Telegram\Middleware\CheckUserStatusMiddleware;
 use App\Telegram\Middleware\SetLanguageMiddleware;
@@ -21,17 +22,14 @@ $bot->group(function (Nutgram $bot) {
         ->description('Просмотр хранилища')
     ;
 
-//    $bot
-//        ->onCommand('edit_storage', AddCloudStorageConversation::class)
-//        ->description('Редактирование хранилища')
-//    ;
-
     $bot
         ->onCommand('delete_storage', DeleteStorageConversation::class)
         ->description('Удалить хранилище. Delete storage.')
     ;
 
-    $bot->onCommand('set_default_storage', SetDefaultStorageConversation::class)
-        ->description('Хранилище по-умолчанию')
+    $bot
+        ->onCommand('storage_access', EditStorageAccessConversation::class)
+        ->description('Редактирование доступов хранилища')
     ;
+
 });

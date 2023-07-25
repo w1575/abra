@@ -24,7 +24,7 @@ return [
                 . PHP_EOL . 'Доступы к API: :AccessSet'
                 . PHP_EOL . "Генерировать имя файлы: :GenerateFileName"
                 . PHP_EOL . "Перезаписывать файлы с одинаковыми именами: :Overwrite"
-                . PHP_EOL . "Длина генерируемого имени: :LengthOfGeneratedName"
+//                . PHP_EOL . "Длина генерируемого имени: :LengthOfGeneratedName"
                 . PHP_EOL . "Директория для загрузки: :Folder"
                 . PHP_EOL . "Поддериктория с именем типа файла: :SubFolderBasedOnType"
             ,

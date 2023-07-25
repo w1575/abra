@@ -23,6 +23,12 @@ return [
         'wrong_storage' => 'Хранилище не найдено, либо нет доступа',
     ],
 
+    'access_settings' => [
+        'debugToken' => 'Отладочный токен',
+        'enter_new_token' => 'Введите новый токен',
+        'debugToken_too_short' => 'Отладочный токен слишком короткий',
+    ],
+
     'bot' => [
         'enter_name' => 'Введите название для хранилища',
         'choice_type' => 'Выберите тип хранилища',
@@ -44,6 +50,5 @@ return [
         'storage_not_found' => 'Хранилище не найдено',
 
         'name_must_start_with_slash' => 'Название должно начинаться \'\\\' ',
-
     ],
 ];

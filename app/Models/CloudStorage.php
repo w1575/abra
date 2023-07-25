@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Data\Storages\AccessConfigs\YandexDiskAccessConfigData;
 use App\Data\Storages\Settings\StorageSettingsData;
+use App\Enums\Storages\StorageTypeEnum;
 use Database\Factories\CloudStorageFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 use Illuminate\Database\Eloquent\Casts\Json;
+use Illuminate\Support\Facades\Crypt;
+use Spatie\LaravelData\Data;
 
 /**
  * App\Models\CloudStorage
@@ -24,7 +28,7 @@ use Illuminate\Database\Eloquent\Casts\Json;
  * @property int $telegram_account_id
  * @property string $storage_type
  * @property mixed|StorageSettingsData|null $storage_settings
- * @property string|null $access_config
+ * @property YandexDiskAccessConfigData|null $access_config
  * @method static CloudStorageFactory factory($count = null, $state = [])
  * @method static Builder|CloudStorage newModelQuery()
  * @method static Builder|CloudStorage newQuery()
@@ -66,17 +70,49 @@ class CloudStorage extends Model
         );
     }
 
+    protected function accessConfig(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value): ?Data {
+                if ($value === null) {
+                    return null;
+                }
+
+                $decrypt = function (Data $data): void {
+                    foreach ($data as $property => $datum) {
+                        if ($datum !== null) {
+                            $data->{$property} = Crypt::decryptString($datum);
+                        }
+                    }
+                };
+
+                switch ($this->storage_type) {
+                    case StorageTypeEnum::YandexDisk->value:
+                        $data = YandexDiskAccessConfigData::from($value);
+                        break;
+                    default:
+                        return null;
+                }
+                $decrypt($data);
+
+                return $data;
+            },
+            set: function (?Data $value) {
+//                if ($value === null) {
+//                    return null;
+//                }
+//
+//                foreach ($value as $property => $item) {
+//                    $value->{$property} = Crypt::encryptString($item);
+//                } // this piece of crap make some mess :(
+
+                return $value?->toJson();
+            }
+        );
+    }
+
     public function scopeWhereTelegramId(Builder $builder, int $id): void
     {
-//        $builder->leftJoin(
-//            'telegram_accounts',
-//            'cloud_storages.telegram_account_id',
-//            '=',
-//            'telegram_accounts.id'
-//        );
-
-//        $builder->where('telegram_accounts.telegram_id', $id);
-
         $builder->whereRelation(
             'telegramAccount',
             'telegram_accounts.telegram_id',

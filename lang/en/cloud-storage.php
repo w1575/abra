@@ -23,6 +23,11 @@ return [
         'wrong_storage' => 'Storage not found or no access',
     ],
 
+    'access_settings' => [
+        'debugToken' => 'Debug Token',
+        'enter_new_token' => 'Enter new Token',
+    ],
+
     'bot' => [
         'enter_name' => 'Enter a name for the storage',
         'choice_type' => 'Select storage type',

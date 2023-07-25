@@ -6,7 +6,7 @@ use App\Data\ConversationSteps\EditStorageConversationData;
 use App\Enums\Storages\StorageTypeEnum;
 use App\Models\CloudStorage;
 use App\Models\ConversationStep;
-use App\Telegram\Traits\TelegramConversationTrait;
+use App\Telegram\Traits\TelegramStorageConversationTrait;
 use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Conversations\InlineMenu;
 use SergiX44\Nutgram\Nutgram;
@@ -17,7 +17,7 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
  */
 class ViewStorageCommand extends InlineMenu
 {
-    use TelegramConversationTrait;
+    use TelegramStorageConversationTrait;
 
     public const CONVERSATION_STEP_NAME = 'ViewStorageCommand';
 
@@ -34,7 +34,7 @@ class ViewStorageCommand extends InlineMenu
             "accessSet" => $storage->access_config !== null ? "+" : "-",
             "generateFileName" => $storage->storage_settings->generateFileName,
             "overwrite" => $storage->storage_settings->overwrite,
-            "lengthOfGeneratedName" => $storage->storage_settings->lengthOfGeneratedName ? "+" : "-",
+//            "lengthOfGeneratedName" => $storage->storage_settings->lengthOfGeneratedName ? "+" : "-",
             "folder" => $storage->storage_settings->folder,
             "subFolderBasedOnType" => $storage->storage_settings->subFolderBasedOnType,
         ]);
@@ -154,12 +154,12 @@ class ViewStorageCommand extends InlineMenu
             ),
         );
 
-        $this->addButtonRow(
-            InlineKeyboardButton::make(
-                __('cloud-storage.config.lengthOfGeneratedName'),
-                callback_data: "$storage->id@editLengthOfGeneratedName"
-            ),
-        );
+//        $this->addButtonRow(
+//            InlineKeyboardButton::make(
+//                __('cloud-storage.config.lengthOfGeneratedName'),
+//                callback_data: "$storage->id@editLengthOfGeneratedName"
+//            ),
+//        );
 
         $basedOnType = $storage
             ->storage_settings
@@ -389,17 +389,6 @@ class ViewStorageCommand extends InlineMenu
         $this->logMemoryUsage('setStorageType');
     }
 
-    protected function getConversationStepData(Nutgram $bot): ?EditStorageConversationData
-    {
-        $step = $this->getConversationStep($bot);
-
-        if ($step === null) {
-            return null;
-        }
-
-        return EditStorageConversationData::from($step->step_data);
-    }
-
     protected function addBackToStorageButton(Nutgram $bot, int $storageId): void
     {
         $this->addButtonRow(
@@ -514,56 +503,7 @@ class ViewStorageCommand extends InlineMenu
         $size = memory_get_usage(true);
         $unit=array('b','kb','mb','gb','tb','pb');
         $memoryUsed = @round($size/pow(1024, ($i=floor(log($size, 1024)))), 2).' '.$unit[$i];
-        file_put_contents(storage_path('/app/usage'), "$step : $memoryUsed" . PHP_EOL, FILE_APPEND);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    protected function getStorageWhereUserHasAccess(Nutgram $bot, int $storageId): CloudStorage
-    {
-        $storage = CloudStorage::query()
-            ->whereTelegramId($bot->userId())
-            ->whereId($storageId)
-            ->first()
-        ;
-
-        if ($storage === null) {
-            $bot->answerCallbackQuery(text: __('cloud-storage.bot.storage_not_found'));
-            $this->end();
-        }
-
-        return $storage;
-    }
-
-    /**
-     * TODO: use this where possible
-     * @throws InvalidArgumentException
-     */
-    protected function getStorageFromRequestAndSaveStepData(Nutgram $bot): CloudStorage
-    {
-        $storageId = (int) $bot->callbackQuery()->data;
-        $currentConversation = $this->getConversationStep($bot);
-        $conversationData = new EditStorageConversationData(
-            $storageId,
-            static::CONVERSATION_STEP_NAME
-        );
-
-        $currentConversation->update([
-            'step_data' => $conversationData->toJson(),
-        ]);
-
-        return $this->getStorageWhereUserHasAccess($bot, $storageId);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    protected function getStorageFromConversationStep(Nutgram $bot): CloudStorage
-    {
-        $data = $this->getConversationStepData($bot);
-
-        return $this->getStorageWhereUserHasAccess($bot, $data->cloud_storage_id);
+//        file_put_contents(storage_path('/app/usage'), "$step : $memoryUsed" . PHP_EOL, FILE_APPEND);
     }
 
     /**

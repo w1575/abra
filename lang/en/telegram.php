@@ -24,7 +24,7 @@ return [
                 . PHP_EOL . 'API access: :AccessSet'
                 . PHP_EOL . "Generate file name: :GenerateFileName"
                 . PHP_EOL . "Overwrite files with same name: :Overwrite"
-                . PHP_EOL . "Length of generated name: :LengthOfGeneratedName"
+//                . PHP_EOL . "Length of generated name: :LengthOfGeneratedName"
                 . PHP_EOL . "Upload folder: :Folder"
                 . PHP_EOL . "Sub Folder Based On Type: :SubFolderBasedOnType"
             ,
