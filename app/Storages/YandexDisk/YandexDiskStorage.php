@@ -23,6 +23,8 @@ class YandexDiskStorage implements YandexDiskStorageContract
 
     protected StorageSettingsData $settingsData;
 
+    protected YandexDiskAccessConfigData $accessConfigData;
+
     public function __construct(
         protected ClientInterface $client,
     ) {
@@ -32,7 +34,7 @@ class YandexDiskStorage implements YandexDiskStorageContract
     protected function getAuthorizationHeader(): array
     {
         return [
-            'Authorization' => 'OAuth '.env('YANDEX_DISK_OAUTH_TOKEN'), // TODO: temporary solution
+            'Authorization' => 'OAuth ' . $this->accessConfigData->debugToken,
         ];
     }
 
@@ -55,8 +57,9 @@ class YandexDiskStorage implements YandexDiskStorageContract
      * @param  YandexDiskAccessConfigData $config
      * @return static
      */
-    public function setConfig(mixed $config): static
+    public function setAccessConfig(mixed $config): static
     {
+        $this->accessConfigData = $config;
         return $this;
     }
 
@@ -100,7 +103,11 @@ class YandexDiskStorage implements YandexDiskStorageContract
             : basename($localPath)
         ;
 
-        $uploadFileData->remoteFullPath = $uploadFileData->remoteFilePath . $fileName;
+        if (!str_ends_with($this->settingsData->folder, '/')) {
+            $this->settingsData->folder .= "/";
+        }
+
+        $uploadFileData->remoteFullPath = $this->settingsData->folder . $fileName;
 
         $uploadUrlData = $this->getUploadLink($uploadFileData);
 
@@ -126,8 +133,6 @@ class YandexDiskStorage implements YandexDiskStorageContract
             return $fileInfoData;
         }
 
-        // log for error
-
         return new FileInfoData();
     }
 
@@ -143,7 +148,7 @@ class YandexDiskStorage implements YandexDiskStorageContract
                 $this->decodeResponseBody($result)
             );
         } catch (GuzzleException $e) {
-            // TODO: log for error
+            dump($e->getMessage());
             return null;
         }
     }

@@ -19,20 +19,7 @@ class PhotoHandler
     public function __invoke(Nutgram $bot): void
     {
         $photoSize = array_pop($bot->message()->photo);
-        $settings = TelegramAccountSettings::whereRelation(
-            'telegramAccount', 'telegram_id', '=', $bot->userId()
-        )->first();
-
-        $storage = $settings->cloudStorage;
-
-        $storageComponent = $this->getStorageComponent($storage);
-
-        $dispatchData = new FileHandlerDispatchData($photoSize->file_id, $storageComponent);
-
-
-
-
+        dump($photoSize->file_id);
+        $this->dispatchJob($bot, $photoSize->file_id);
     }
-
-
 }

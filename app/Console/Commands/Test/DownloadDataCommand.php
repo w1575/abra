@@ -29,14 +29,18 @@ class DownloadDataCommand extends Command
      */
     public function handle(Nutgram $bot)
     {
-        $file = $bot->getFile('BAACAgIAAxkBAAOxZK3R57RjOVsnEXHJhPU-NXxIheoAAjk4AAK3pWlJSdSiEEcTVrcvBA');
-        try {
-            $bot->downloadFile($file, storage_path('app/public/test' . $file->file_path));
-        } catch (GuzzleException $e) {
-        } catch (NotFoundExceptionInterface $e) {
-        } catch (ContainerExceptionInterface $e) {
-        } catch (\Throwable $e) {
-        }
-        dd($file);
+        $file = $bot
+            ->getFile('BAACAgIAAxkBAAOxZK3R57RjOVsnEXHJhPU-NXxIheoAAjk4AAK3pWlJSdSiEEcTVrcvBA')
+            ->save(storage_path('app/public/test/'))
+        ;
+
+//        $filePath = storage_path('app/public/test' . $file->file_path);
+//        $bot->getFile($fileId)->save('file/or/directory');
+//        try {
+//            $bot->downloadFile($file, $filePath);
+//        } catch (GuzzleException|NotFoundExceptionInterface|ContainerExceptionInterface|\Throwable $e) {
+//        }
+
+//        dd(mime_content_type($filePath));
     }
 }

@@ -13,7 +13,7 @@ use Spatie\LaravelData\DataCollection;
 
 interface StorageContract
 {
-    public function setConfig(mixed $config): static;
+    public function setAccessConfig(mixed $config): static;
 
     public function setStorageSettings(StorageSettingsData $settings): static;
 

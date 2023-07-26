@@ -9,9 +9,9 @@ use Spatie\LaravelData\Data;
 class FileHandlerDispatchData extends Data
 {
     public function __construct(
-        public int $fileId,
+        public string $fileId,
         public int $telegramUserId,
+        public int $cloudStorageId,
     ) {
-
     }
 }

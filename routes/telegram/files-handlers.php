@@ -26,4 +26,4 @@ $bot->group(function (Nutgram $bot) {
 
     $bot->onVideoNote(Handlers\VideoNoteHandler::class);
 
-})->middleware(CheckUserStatusMiddleware::class)->middleware(SetLanguageMiddleware::class);
+});
